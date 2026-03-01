@@ -287,6 +287,20 @@
             color: var(--text-muted);
         }
         .download-info span { display: flex; align-items: center; gap: 6px; }
+        .smartscreen-note {
+            margin-top: 16px;
+            padding: 10px 16px;
+            background: rgba(255, 193, 7, 0.08);
+            border: 1px solid rgba(255, 193, 7, 0.25);
+            border-radius: 8px;
+            font-size: 12.5px;
+            color: #ffc107;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            line-height: 1.5;
+        }
+        .smartscreen-note svg { flex-shrink: 0; stroke: #ffc107; }
 
         /* Hero Visual */
         .hero-visual {
@@ -706,7 +720,7 @@
             <div class="hero-text">
                 <div class="hero-badge">
                     <div class="pulse"></div>
-                    v1.0.0 - Windows 10/11
+                    v1.0.1 - Windows 10/11
                 </div>
                 <h1>
                     Geliştirici Araçlarını<br>
@@ -747,6 +761,10 @@
                         Açık Kaynak
                     </span>
                 </div>
+                <div class="smartscreen-note">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                    Windows SmartScreen uyarısı çıkarsa: <strong>"Ek bilgi"</strong> → <strong>"Yine de çalıştır"</strong> tıklayın. Uygulama açık kaynak ve güvenlidir.
+                </div>
             </div>
             <div class="hero-visual">
                 <div class="app-preview">
@@ -754,7 +772,7 @@
                         <div class="window-dot red"></div>
                         <div class="window-dot yellow"></div>
                         <div class="window-dot green"></div>
-                        <span style="margin-left: 12px; font-size: 12px; color: var(--text-muted);">DevARI Setup v1.0.0</span>
+                        <span style="margin-left: 12px; font-size: 12px; color: var(--text-muted);">DevARI Setup v1.0.1</span>
                     </div>
                     <div class="app-preview-body">
                         <div class="preview-tool-grid">
