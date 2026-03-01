@@ -5,6 +5,7 @@
         xmlns:vm="clr-namespace:DevARIManager.App.ViewModels"
         xmlns:views="clr-namespace:DevARIManager.App.Views"
         Title="DevARI Manager"
+        Icon="app.ico"
         Height="800" Width="1280"
         MinHeight="600" MinWidth="900"
         WindowStartupLocation="CenterScreen"
