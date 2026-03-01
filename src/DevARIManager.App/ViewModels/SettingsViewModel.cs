@@ -14,7 +14,7 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty] private bool _autoStartServices;
     [ObservableProperty] private bool _checkUpdatesOnStartup;
     [ObservableProperty] private string _preferredInstaller = "";
-    [ObservableProperty] private string _appVersion = "1.0.0";
+    [ObservableProperty] private string _appVersion = "1.0.3";
     [ObservableProperty] private string _saveStatus = "";
 
     public SettingsViewModel(ISettingsService settings, ILogService log)
