@@ -54,8 +54,8 @@ Desktop.ini
 ## Publish output
 publish/
 
-## Claude local settings
-.claude/settings.local.json
+## Claude
+.claude/
 
 ## Misc
 *.tmp
