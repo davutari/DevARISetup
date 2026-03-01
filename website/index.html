@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevARI Setup - Developer Tools Manager for Windows</title>
+    <meta name="description" content="Windows 10/11 için tek tıkla geliştirici araçlarını yükle, yönet ve yapılandır. Node.js, Python, Docker, Git ve daha fazlası.">
+    <meta name="keywords" content="developer tools, windows, setup, node.js, python, docker, git, devari">
+    <meta name="author" content="Davut ARI">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="DevARI Setup - Developer Tools Manager">
+    <meta property="og:description" content="Windows 10/11 için tek tıkla geliştirici araçlarını yükle, yönet ve yapılandır.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="og-image.png">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* ═══════════════════ RESET & BASE ═══════════════════ */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: #1a1a2e;
+            --bg-card-hover: #1f1f35;
+            --text-primary: #f0f0f5;
+            --text-secondary: #8888a0;
+            --text-muted: #55556a;
+            --accent: #6c5ce7;
+            --accent-light: #a29bfe;
+            --accent-glow: rgba(108, 92, 231, 0.3);
+            --gradient-1: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
+            --gradient-2: linear-gradient(135deg, #00cec9 0%, #6c5ce7 100%);
+            --gradient-3: linear-gradient(135deg, #fd79a8 0%, #6c5ce7 100%);
+            --border: rgba(255, 255, 255, 0.06);
+            --border-hover: rgba(108, 92, 231, 0.3);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --radius-xs: 6px;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ═══════════════════ NOISE TEXTURE ═══════════════════ */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.02'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ═══════════════════ ANIMATED GRADIENT BLOBS ═══════════════════ */
+        .bg-blobs {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .bg-blobs .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.15;
+            animation: blobFloat 20s ease-in-out infinite alternate;
+        }
+        .blob-1 { width: 600px; height: 600px; background: #6c5ce7; top: -10%; left: -5%; animation-delay: 0s; }
+        .blob-2 { width: 500px; height: 500px; background: #00cec9; top: 40%; right: -10%; animation-delay: -7s; }
+        .blob-3 { width: 400px; height: 400px; background: #fd79a8; bottom: -5%; left: 30%; animation-delay: -14s; }
+
+        @keyframes blobFloat {
+            0% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+            100% { transform: translate(10px, -10px) scale(1.05); }
+        }
+
+        /* ═══════════════════ CONTAINER ═══════════════════ */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ═══════════════════ NAVBAR ═══════════════════ */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 16px 0;
+            transition: all 0.3s;
+        }
+        .navbar.scrolled {
+            background: rgba(10, 10, 15, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 10px 0;
+        }
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+        .navbar-logo .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-1);
+            border-radius: var(--radius-xs);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 800;
+            color: white;
+            box-shadow: 0 4px 20px var(--accent-glow);
+        }
+        .navbar-logo .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .navbar-logo .logo-text span {
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+            list-style: none;
+        }
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        .nav-links a:hover { color: var(--text-primary); }
+        .nav-cta {
+            padding: 8px 20px !important;
+            background: var(--gradient-1) !important;
+            border-radius: var(--radius-xs) !important;
+            color: white !important;
+            font-weight: 600 !important;
+            transition: transform 0.3s, box-shadow 0.3s !important;
+        }
+        .nav-cta:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px var(--accent-glow);
+        }
+
+        /* ═══════════════════ HERO ═══════════════════ */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 120px 0 80px;
+            position: relative;
+        }
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            background: rgba(108, 92, 231, 0.1);
+            border: 1px solid rgba(108, 92, 231, 0.2);
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--accent-light);
+            margin-bottom: 24px;
+        }
+        .hero-badge .pulse {
+            width: 8px;
+            height: 8px;
+            background: #00cec9;
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.3); }
+        }
+        .hero h1 {
+            font-size: clamp(36px, 5vw, 56px);
+            font-weight: 800;
+            line-height: 1.15;
+            letter-spacing: -0.03em;
+            margin-bottom: 20px;
+        }
+        .hero h1 .gradient-text {
+            background: var(--gradient-2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero-desc {
+            font-size: 17px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 36px;
+            max-width: 480px;
+        }
+        .hero-actions {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 32px;
+            background: var(--gradient-1);
+            color: white;
+            text-decoration: none;
+            border-radius: var(--radius-sm);
+            font-size: 15px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 25px var(--accent-glow);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 40px rgba(108, 92, 231, 0.4);
+        }
+        .btn-primary svg { width: 20px; height: 20px; }
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 32px;
+            background: transparent;
+            color: var(--text-primary);
+            text-decoration: none;
+            border-radius: var(--radius-sm);
+            font-size: 15px;
+            font-weight: 500;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+        .btn-secondary:hover {
+            border-color: var(--border-hover);
+            background: rgba(108, 92, 231, 0.05);
+        }
+        .download-info {
+            display: flex;
+            gap: 24px;
+            margin-top: 20px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        .download-info span { display: flex; align-items: center; gap: 6px; }
+
+        /* Hero Visual */
+        .hero-visual {
+            position: relative;
+            display: flex;
+            justify-content: center;
+        }
+        .app-preview {
+            width: 100%;
+            max-width: 560px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            box-shadow: 0 20px 80px rgba(0, 0, 0, 0.5), 0 0 60px var(--accent-glow);
+            position: relative;
+        }
+        .app-preview-header {
+            background: #1a1a2e;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+        .window-dot {
+            width: 12px; height: 12px; border-radius: 50%;
+        }
+        .window-dot.red { background: #ff5f56; }
+        .window-dot.yellow { background: #ffbd2e; }
+        .window-dot.green { background: #27c93f; }
+        .app-preview-body {
+            background: var(--bg-secondary);
+            padding: 24px;
+            min-height: 350px;
+        }
+        .preview-tool-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .preview-tool {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            background: var(--bg-card);
+            border-radius: var(--radius-xs);
+            border: 1px solid var(--border);
+            animation: fadeInUp 0.5s ease-out both;
+        }
+        .preview-tool:nth-child(1) { animation-delay: 0.1s; }
+        .preview-tool:nth-child(2) { animation-delay: 0.2s; }
+        .preview-tool:nth-child(3) { animation-delay: 0.3s; }
+        .preview-tool:nth-child(4) { animation-delay: 0.4s; }
+        .preview-tool:nth-child(5) { animation-delay: 0.5s; }
+        .preview-tool:nth-child(6) { animation-delay: 0.6s; }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .tool-icon {
+            width: 36px; height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        .tool-icon.nodejs { background: linear-gradient(135deg, #339933, #68a063); }
+        .tool-icon.python { background: linear-gradient(135deg, #306998, #FFD43B); }
+        .tool-icon.docker { background: linear-gradient(135deg, #0db7ed, #384d54); }
+        .tool-icon.git { background: linear-gradient(135deg, #F05032, #de4c36); }
+        .tool-icon.vscode { background: linear-gradient(135deg, #007ACC, #2b9fef); }
+        .tool-icon.postgres { background: linear-gradient(135deg, #336791, #4a8dbe); }
+        .preview-tool-info { flex: 1; }
+        .preview-tool-name { font-size: 13px; font-weight: 600; }
+        .preview-tool-status {
+            font-size: 11px;
+            color: #27c93f;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .status-dot { width: 6px; height: 6px; background: #27c93f; border-radius: 50%; }
+
+        /* ═══════════════════ FEATURES ═══════════════════ */
+        .features {
+            padding: 100px 0;
+        }
+        .section-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--accent-light);
+            margin-bottom: 16px;
+        }
+        .section-title {
+            font-size: clamp(28px, 4vw, 40px);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 16px;
+        }
+        .section-desc {
+            font-size: 16px;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin-bottom: 60px;
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+        .feature-card {
+            padding: 32px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--gradient-1);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .feature-card:hover {
+            border-color: var(--border-hover);
+            background: var(--bg-card-hover);
+            transform: translateY(-4px);
+        }
+        .feature-card:hover::before { opacity: 1; }
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+        .feature-icon.purple { background: rgba(108, 92, 231, 0.15); }
+        .feature-icon.teal { background: rgba(0, 206, 201, 0.15); }
+        .feature-icon.pink { background: rgba(253, 121, 168, 0.15); }
+        .feature-icon.blue { background: rgba(9, 132, 227, 0.15); }
+        .feature-icon.orange { background: rgba(225, 112, 85, 0.15); }
+        .feature-icon.green { background: rgba(0, 184, 148, 0.15); }
+        .feature-card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .feature-card p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* ═══════════════════ TOOLS SHOWCASE ═══════════════════ */
+        .tools-section {
+            padding: 100px 0;
+        }
+        .tools-marquee {
+            overflow: hidden;
+            padding: 40px 0;
+            -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+        }
+        .tools-track {
+            display: flex;
+            gap: 24px;
+            animation: marquee 30s linear infinite;
+            width: max-content;
+        }
+        @keyframes marquee {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+        .tool-chip {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            white-space: nowrap;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .tool-chip img {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+
+        /* ═══════════════════ HOW IT WORKS ═══════════════════ */
+        .how-section {
+            padding: 100px 0;
+        }
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+            margin-top: 60px;
+        }
+        .step-card {
+            text-align: center;
+            padding: 40px 24px;
+            position: relative;
+        }
+        .step-number {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--gradient-1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 800;
+            margin: 0 auto 24px;
+            box-shadow: 0 4px 20px var(--accent-glow);
+        }
+        .step-card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .step-card p {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* ═══════════════════ TERMINAL SECTION ═══════════════════ */
+        .terminal-section {
+            padding: 80px 0;
+        }
+        .terminal-window {
+            background: #1a1a2e;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            max-width: 700px;
+            margin: 0 auto;
+            box-shadow: 0 20px 80px rgba(0, 0, 0, 0.3);
+        }
+        .terminal-header {
+            background: #12121a;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        .terminal-body {
+            padding: 24px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            line-height: 2;
+        }
+        .terminal-line { display: flex; gap: 8px; }
+        .terminal-prompt { color: #27c93f; }
+        .terminal-cmd { color: var(--text-primary); }
+        .terminal-output { color: var(--text-secondary); }
+        .terminal-success { color: #27c93f; }
+        .terminal-accent { color: var(--accent-light); }
+
+        /* ═══════════════════ CTA SECTION ═══════════════════ */
+        .cta-section {
+            padding: 100px 0;
+        }
+        .cta-box {
+            text-align: center;
+            padding: 80px 40px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+        .cta-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, var(--accent-glow) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        .cta-box > * { position: relative; }
+        .cta-box h2 {
+            font-size: clamp(28px, 4vw, 40px);
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        .cta-box p {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: 36px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .cta-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* ═══════════════════ FOOTER ═══════════════════ */
+        .footer {
+            padding: 40px 0;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .footer p {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        .footer a {
+            color: var(--accent-light);
+            text-decoration: none;
+        }
+        .footer-links {
+            display: flex;
+            gap: 24px;
+            list-style: none;
+        }
+        .footer-links a {
+            font-size: 13px;
+            color: var(--text-muted);
+            transition: color 0.3s;
+        }
+        .footer-links a:hover { color: var(--text-primary); }
+
+        /* ═══════════════════ SCROLL ANIMATIONS ═══════════════════ */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ═══════════════════ RESPONSIVE ═══════════════════ */
+        @media (max-width: 968px) {
+            .hero-content { grid-template-columns: 1fr; text-align: center; }
+            .hero-desc { margin-left: auto; margin-right: auto; }
+            .hero-actions { justify-content: center; }
+            .download-info { justify-content: center; }
+            .hero-visual { margin-top: 40px; }
+            .features-grid { grid-template-columns: 1fr 1fr; }
+            .steps-grid { grid-template-columns: 1fr; max-width: 400px; margin-left: auto; margin-right: auto; }
+            .nav-links { display: none; }
+        }
+        @media (max-width: 640px) {
+            .features-grid { grid-template-columns: 1fr; }
+            .preview-tool-grid { grid-template-columns: 1fr; }
+            .footer-content { flex-direction: column; gap: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Background Blobs -->
+<div class="bg-blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+</div>
+
+<!-- Navbar -->
+<nav class="navbar" id="navbar">
+    <div class="container">
+        <a href="#" class="navbar-logo">
+            <div class="logo-icon">D</div>
+            <div class="logo-text">Dev<span>ARI</span></div>
+        </a>
+        <ul class="nav-links">
+            <li><a href="#features">Ozellikler</a></li>
+            <li><a href="#tools">Araclar</a></li>
+            <li><a href="#how">Nasil Calisir</a></li>
+            <li><a href="#download" class="nav-cta">Indir</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero" id="home">
+    <div class="container">
+        <div class="hero-content">
+            <div class="hero-text">
+                <div class="hero-badge">
+                    <div class="pulse"></div>
+                    v1.0.0 - Windows 10/11
+                </div>
+                <h1>
+                    Gelistirici Araclarini<br>
+                    <span class="gradient-text">Tek Tikla Yonet</span>
+                </h1>
+                <p class="hero-desc">
+                    Node.js, Python, Docker, Git ve 20+ araci tek bir arayuzden
+                    yukleyin, guncelleyin ve yapilandirin. Winget & Chocolatey destegi
+                    ile otomatik kurulum.
+                </p>
+                <div class="hero-actions">
+                    <a href="#download" class="btn-primary" id="hero-download">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        Ucretsiz Indir
+                    </a>
+                    <a href="https://github.com/davutari/DevARISetup" class="btn-secondary" target="_blank">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                        </svg>
+                        GitHub
+                    </a>
+                </div>
+                <div class="download-info">
+                    <span>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg>
+                        Windows 10/11 x64
+                    </span>
+                    <span>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                        ~66 MB
+                    </span>
+                    <span>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        Acik Kaynak
+                    </span>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="app-preview">
+                    <div class="app-preview-header">
+                        <div class="window-dot red"></div>
+                        <div class="window-dot yellow"></div>
+                        <div class="window-dot green"></div>
+                        <span style="margin-left: 12px; font-size: 12px; color: var(--text-muted);">DevARI Setup v1.0.0</span>
+                    </div>
+                    <div class="app-preview-body">
+                        <div class="preview-tool-grid">
+                            <div class="preview-tool">
+                                <div class="tool-icon nodejs">JS</div>
+                                <div class="preview-tool-info">
+                                    <div class="preview-tool-name">Node.js LTS</div>
+                                    <div class="preview-tool-status"><div class="status-dot"></div> v20.11.0</div>
+                                </div>
+                            </div>
+                            <div class="preview-tool">
+                                <div class="tool-icon python">Py</div>
+                                <div class="preview-tool-info">
+                                    <div class="preview-tool-name">Python 3.13</div>
+                                    <div class="preview-tool-status"><div class="status-dot"></div> v3.13.2</div>
+                                </div>
+                            </div>
+                            <div class="preview-tool">
+                                <div class="tool-icon docker">Dk</div>
+                                <div class="preview-tool-info">
+                                    <div class="preview-tool-name">Docker</div>
+                                    <div class="preview-tool-status"><div class="status-dot"></div> v27.5.1</div>
+                                </div>
+                            </div>
+                            <div class="preview-tool">
+                                <div class="tool-icon git">Gt</div>
+                                <div class="preview-tool-info">
+                                    <div class="preview-tool-name">Git</div>
+                                    <div class="preview-tool-status"><div class="status-dot"></div> v2.48.1</div>
+                                </div>
+                            </div>
+                            <div class="preview-tool">
+                                <div class="tool-icon vscode">VS</div>
+                                <div class="preview-tool-info">
+                                    <div class="preview-tool-name">VS Code</div>
+                                    <div class="preview-tool-status"><div class="status-dot"></div> v1.97.2</div>
+                                </div>
+                            </div>
+                            <div class="preview-tool">
+                                <div class="tool-icon postgres">PG</div>
+                                <div class="preview-tool-info">
+                                    <div class="preview-tool-name">PostgreSQL</div>
+                                    <div class="preview-tool-status"><div class="status-dot"></div> v17.2</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features -->
+<section class="features" id="features">
+    <div class="container">
+        <div class="reveal">
+            <div class="section-label">&#9889; Ozellikler</div>
+            <h2 class="section-title">Her Sey Tek Yerde</h2>
+            <p class="section-desc">
+                Gelistirici ortaminizi dakikalar icinde kurun. Artik saatlerce kurulum yapmak yok.
+            </p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card reveal">
+                <div class="feature-icon purple">&#128230;</div>
+                <h3>Tek Tikla Kurulum</h3>
+                <p>Winget ve Chocolatey destegiyle 20+ araci tek tikla yukleyin. Otomatik bagimliliklari yonetir.</p>
+            </div>
+            <div class="feature-card reveal">
+                <div class="feature-icon teal">&#9881;&#65039;</div>
+                <h3>Servis Yonetimi</h3>
+                <p>PostgreSQL, MySQL, MongoDB, Redis, Docker gibi servisleri tek tikla baslatin, durdurun ve izleyin.</p>
+            </div>
+            <div class="feature-card reveal">
+                <div class="feature-icon pink">&#127912;</div>
+                <h3>Modern Arayuz</h3>
+                <p>Material Design temali koyu arayuz ile modern ve goze hos bir deneyim. WPF + MVVM mimarisi.</p>
+            </div>
+            <div class="feature-card reveal">
+                <div class="feature-icon blue">&#128269;</div>
+                <h3>Ortam Denetimi</h3>
+                <p>PATH degiskenleri, ortam ayarlari ve sistem bilgilerini otomatik kontrol eder ve duzeltir.</p>
+            </div>
+            <div class="feature-card reveal">
+                <div class="feature-icon orange">&#128640;</div>
+                <h3>Canli Log Akisi</h3>
+                <p>Kurulum ve yapılandirma islemlerini canli olarak takip edin. Hatalari aninda gorun.</p>
+            </div>
+            <div class="feature-card reveal">
+                <div class="feature-icon green">&#128274;</div>
+                <h3>Yonetici Destegi</h3>
+                <p>Ihtiyac halinde UAC yukseltme ile admin yetkisi ister. Guvenli kurulum garantisi.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Tools Showcase -->
+<section class="tools-section" id="tools">
+    <div class="container">
+        <div class="reveal" style="text-align: center;">
+            <div class="section-label">&#128295; Desteklenen Araclar</div>
+            <h2 class="section-title">20+ Gelistirici Araci</h2>
+            <p class="section-desc" style="margin-left: auto; margin-right: auto;">
+                En populer gelistirici araclarini destekler. Surekli yeni araclar ekleniyor.
+            </p>
+        </div>
+    </div>
+    <div class="tools-marquee">
+        <div class="tools-track">
+            <div class="tool-chip">&#127759; Node.js</div>
+            <div class="tool-chip">&#128013; Python</div>
+            <div class="tool-chip">&#128051; Docker</div>
+            <div class="tool-chip">&#128200; Git</div>
+            <div class="tool-chip">&#9997;&#65039; VS Code</div>
+            <div class="tool-chip">&#128024; PostgreSQL</div>
+            <div class="tool-chip">&#127811; MongoDB</div>
+            <div class="tool-chip">&#128308; Redis</div>
+            <div class="tool-chip">&#9749; Java JDK</div>
+            <div class="tool-chip">&#128039; Go</div>
+            <div class="tool-chip">&#9881;&#65039; Rust</div>
+            <div class="tool-chip">&#128241; Flutter</div>
+            <div class="tool-chip">&#127916; Android Studio</div>
+            <div class="tool-chip">&#128038; MySQL</div>
+            <div class="tool-chip">&#127793; Nginx</div>
+            <div class="tool-chip">&#129302; GitHub CLI</div>
+            <div class="tool-chip">&#128230; Laragon</div>
+            <div class="tool-chip">&#128202; Cassandra</div>
+            <!-- Duplicate for seamless loop -->
+            <div class="tool-chip">&#127759; Node.js</div>
+            <div class="tool-chip">&#128013; Python</div>
+            <div class="tool-chip">&#128051; Docker</div>
+            <div class="tool-chip">&#128200; Git</div>
+            <div class="tool-chip">&#9997;&#65039; VS Code</div>
+            <div class="tool-chip">&#128024; PostgreSQL</div>
+            <div class="tool-chip">&#127811; MongoDB</div>
+            <div class="tool-chip">&#128308; Redis</div>
+            <div class="tool-chip">&#9749; Java JDK</div>
+            <div class="tool-chip">&#128039; Go</div>
+            <div class="tool-chip">&#9881;&#65039; Rust</div>
+            <div class="tool-chip">&#128241; Flutter</div>
+            <div class="tool-chip">&#127916; Android Studio</div>
+            <div class="tool-chip">&#128038; MySQL</div>
+            <div class="tool-chip">&#127793; Nginx</div>
+            <div class="tool-chip">&#129302; GitHub CLI</div>
+            <div class="tool-chip">&#128230; Laragon</div>
+            <div class="tool-chip">&#128202; Cassandra</div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works -->
+<section class="how-section" id="how">
+    <div class="container">
+        <div class="reveal" style="text-align: center;">
+            <div class="section-label">&#9889; Nasil Calisir</div>
+            <h2 class="section-title">3 Adimda Hazir</h2>
+        </div>
+        <div class="steps-grid">
+            <div class="step-card reveal">
+                <div class="step-number">1</div>
+                <h3>Indir & Calistir</h3>
+                <p>Tek bir .exe dosyasi. Kurulum gerektirmez. Indirin ve calistirin.</p>
+            </div>
+            <div class="step-card reveal">
+                <div class="step-number">2</div>
+                <h3>Araclari Sec</h3>
+                <p>Ihtiyaciniz olan araclari secin. Bagimliliklari otomatik yonetir.</p>
+            </div>
+            <div class="step-card reveal">
+                <div class="step-number">3</div>
+                <h3>Gelistirmeye Basla</h3>
+                <p>Tum araclar hazir! Servisleri baslatin ve kodlamaya baslayın.</p>
+            </div>
+        </div>
+
+        <!-- Terminal Demo -->
+        <div class="terminal-section reveal">
+            <div class="terminal-window">
+                <div class="terminal-header">
+                    <div class="window-dot red"></div>
+                    <div class="window-dot yellow"></div>
+                    <div class="window-dot green"></div>
+                    <span style="margin-left: 12px;">DevARI Setup - Log</span>
+                </div>
+                <div class="terminal-body">
+                    <div class="terminal-line">
+                        <span class="terminal-accent">[winget]</span>
+                        <span class="terminal-cmd">Node.js LTS yukluyor...</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-success">&#10004;</span>
+                        <span class="terminal-success">Node.js v20.11.0 basariyla yuklendi!</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-accent">[winget]</span>
+                        <span class="terminal-cmd">Python 3.13 yukluyor...</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-success">&#10004;</span>
+                        <span class="terminal-success">Python v3.13.2 basariyla yuklendi!</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-accent">[servis]</span>
+                        <span class="terminal-cmd">PostgreSQL baslatiliyor...</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-success">&#10004;</span>
+                        <span class="terminal-success">PostgreSQL port:5432 uzerinde calisiyor</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">&#9679;</span>
+                        <span class="terminal-output">Tum araclar hazir. Gelistirmeye baslayabilirsiniz!</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA / Download Section -->
+<section class="cta-section" id="download">
+    <div class="container">
+        <div class="cta-box reveal">
+            <h2>Hemen Baslayin</h2>
+            <p>DevARI Setup ile gelistirici ortaminizi dakikalar icinde kurun. Tamamen ucretsiz ve acik kaynak.</p>
+            <div class="cta-buttons">
+                <a href="https://github.com/davutari/DevARISetup/releases/latest/download/DevARISetup-v1.0.0-win64.zip" class="btn-primary" id="main-download">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    Windows x64 Indir (66 MB)
+                </a>
+                <a href="https://github.com/davutari/DevARISetup" class="btn-secondary" target="_blank">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                    </svg>
+                    Kaynak Kodu
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <p>&copy; 2026 <a href="#">DevARI Setup</a> - Developed by Davut ARI &amp;&amp; Claude</p>
+            <ul class="footer-links">
+                <li><a href="https://github.com/davutari/DevARISetup" target="_blank">GitHub</a></li>
+                <li><a href="https://github.com/davutari/DevARISetup/issues" target="_blank">Hata Bildir</a></li>
+                <li><a href="https://github.com/davutari/DevARISetup/releases" target="_blank">Surum Notlari</a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Navbar scroll effect
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+        navbar.classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    // Scroll reveal
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    });
+
+    // Download counter (demo)
+    let downloadCount = 142;
+    const counterEl = document.getElementById('download-counter');
+    if (counterEl) counterEl.textContent = downloadCount;
+</script>
+
+</body>
+</html>

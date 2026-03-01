@@ -1,0 +1,190 @@
+<Window x:Class="DevARIManager.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:vm="clr-namespace:DevARIManager.App.ViewModels"
+        xmlns:views="clr-namespace:DevARIManager.App.Views"
+        Title="DevARI Manager"
+        Height="800" Width="1280"
+        MinHeight="600" MinWidth="900"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ResizeMode="CanResizeWithGrip">
+
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type vm:DashboardViewModel}">
+            <views:DashboardView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:ToolsViewModel}">
+            <views:ToolsView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:ServicesViewModel}">
+            <views:ServicesView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:EnvironmentViewModel}">
+            <views:EnvironmentView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:HealthCheckViewModel}">
+            <views:HealthCheckView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:SettingsViewModel}">
+            <views:SettingsView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:ProfilesViewModel}">
+            <views:ProfilesView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:TerminalViewModel}">
+            <views:TerminalView />
+        </DataTemplate>
+    </Window.Resources>
+
+    <Border CornerRadius="12" Background="{StaticResource ContentBgBrush}" ClipToBounds="True">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="260" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- SIDEBAR -->
+            <Border Grid.Column="0" Background="{StaticResource SidebarGradient}" CornerRadius="12,0,0,12">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <!-- Title Bar Area (draggable) -->
+                    <Border Grid.Row="0" Padding="20,16,12,0" MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+                        <Grid>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Border Width="36" Height="36" CornerRadius="10" Background="{StaticResource AccentGradient}" Margin="0,0,12,0">
+                                    <materialDesign:PackIcon Kind="RocketLaunch" Width="20" Height="20" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </Border>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="DevARI" FontSize="18" FontWeight="Bold" Foreground="White" />
+                                    <TextBlock Text="Manager" FontSize="10" Foreground="#99FFFFFF" Margin="0,-2,0,0" />
+                                </StackPanel>
+                            </StackPanel>
+
+                            <!-- Window Controls -->
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-4,0,0">
+                                <Button Style="{StaticResource MaterialDesignFlatButton}" Padding="4" Width="28" Height="28" Click="MinimizeBtn_Click">
+                                    <materialDesign:PackIcon Kind="WindowMinimize" Width="14" Height="14" Foreground="#99FFFFFF" />
+                                </Button>
+                                <Button Style="{StaticResource MaterialDesignFlatButton}" Padding="4" Width="28" Height="28" Click="MaximizeBtn_Click">
+                                    <materialDesign:PackIcon Kind="WindowMaximize" Width="14" Height="14" Foreground="#99FFFFFF" />
+                                </Button>
+                                <Button Style="{StaticResource MaterialDesignFlatButton}" Padding="4" Width="28" Height="28" Click="CloseBtn_Click">
+                                    <materialDesign:PackIcon Kind="WindowClose" Width="14" Height="14" Foreground="#99FFFFFF" />
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <!-- Version Badge -->
+                    <Border Grid.Row="1" Margin="20,16,20,8">
+                        <Border Background="#20FFFFFF" CornerRadius="8" Padding="12,8">
+                            <StackPanel Orientation="Horizontal">
+                                <Ellipse Width="8" Height="8" Fill="{StaticResource SuccessGreenBrush}" Margin="0,0,8,0" />
+                                <TextBlock Text="v1.0.0 - Hazır" FontSize="11" Foreground="#CCFFFFFF" />
+                            </StackPanel>
+                        </Border>
+                    </Border>
+
+                    <!-- Navigation -->
+                    <StackPanel Grid.Row="2" Margin="8,8,8,0">
+                        <TextBlock Text="ANA MENU" FontSize="10" Foreground="{StaticResource TextMutedBrush}" FontWeight="SemiBold" Margin="20,8,0,8" />
+
+                        <RadioButton Style="{StaticResource NavButton}" IsChecked="True" GroupName="Nav"
+                                     Command="{Binding NavigateToCommand}" CommandParameter="Dashboard">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="ViewDashboard" Width="20" Height="20" Margin="0,0,12,0" VerticalAlignment="Center" />
+                                <TextBlock Text="Dashboard" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </RadioButton>
+
+                        <RadioButton Style="{StaticResource NavButton}" GroupName="Nav"
+                                     Command="{Binding NavigateToCommand}" CommandParameter="Tools">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Toolbox" Width="20" Height="20" Margin="0,0,12,0" VerticalAlignment="Center" />
+                                <TextBlock Text="Araçlar" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </RadioButton>
+
+                        <RadioButton Style="{StaticResource NavButton}" GroupName="Nav"
+                                     Command="{Binding NavigateToCommand}" CommandParameter="Services">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="ServerNetwork" Width="20" Height="20" Margin="0,0,12,0" VerticalAlignment="Center" />
+                                <TextBlock Text="Servisler" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </RadioButton>
+
+                        <RadioButton Style="{StaticResource NavButton}" GroupName="Nav"
+                                     Command="{Binding NavigateToCommand}" CommandParameter="Environment">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="CodeBraces" Width="20" Height="20" Margin="0,0,12,0" VerticalAlignment="Center" />
+                                <TextBlock Text="Ortam &amp; PATH" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </RadioButton>
+
+                        <RadioButton Style="{StaticResource NavButton}" GroupName="Nav"
+                                     Command="{Binding NavigateToCommand}" CommandParameter="HealthCheck">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="HeartPulse" Width="20" Height="20" Margin="0,0,12,0" VerticalAlignment="Center" />
+                                <TextBlock Text="Sağlık Taraması" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </RadioButton>
+
+                        <RadioButton Style="{StaticResource NavButton}" GroupName="Nav"
+                                     Command="{Binding NavigateToCommand}" CommandParameter="Profiles">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="AccountGroup" Width="20" Height="20" Margin="0,0,12,0" VerticalAlignment="Center" />
+                                <TextBlock Text="Profiller" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </RadioButton>
+
+                        <RadioButton Style="{StaticResource NavButton}" GroupName="Nav"
+                                     Command="{Binding NavigateToCommand}" CommandParameter="Terminal">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Console" Width="20" Height="20" Margin="0,0,12,0" VerticalAlignment="Center" />
+                                <TextBlock Text="Terminal" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </RadioButton>
+
+                        <Border Height="1" Background="#15FFFFFF" Margin="20,12" />
+                        <TextBlock Text="SISTEM" FontSize="10" Foreground="{StaticResource TextMutedBrush}" FontWeight="SemiBold" Margin="20,0,0,8" />
+
+                        <RadioButton Style="{StaticResource NavButton}" GroupName="Nav"
+                                     Command="{Binding NavigateToCommand}" CommandParameter="Settings">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Cog" Width="20" Height="20" Margin="0,0,12,0" VerticalAlignment="Center" />
+                                <TextBlock Text="Ayarlar" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </RadioButton>
+                    </StackPanel>
+
+                    <!-- Footer -->
+                    <Border Grid.Row="3" Padding="20,12">
+                        <StackPanel>
+                            <Border Background="#15FFFFFF" CornerRadius="10" Padding="14,10">
+                                <StackPanel>
+                                    <TextBlock Text="DevARI Setup" FontSize="11" FontWeight="SemiBold" Foreground="#CCFFFFFF" />
+                                    <TextBlock Text="Developed by Davut ARI &amp;&amp; Claude" FontSize="9" Foreground="#66FFFFFF" Margin="0,2,0,0" />
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <!-- CONTENT AREA -->
+            <Border Grid.Column="1" Background="{StaticResource ContentBgBrush}">
+                <ContentControl Content="{Binding CurrentView}" Margin="0" />
+            </Border>
+        </Grid>
+    </Border>
+</Window>

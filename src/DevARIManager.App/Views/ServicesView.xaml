@@ -1,0 +1,144 @@
+<UserControl x:Class="DevARIManager.App.Views.ServicesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:converters="clr-namespace:DevARIManager.App.Converters">
+
+    <UserControl.Resources>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVis" />
+        <converters:InverseBoolToVisibilityConverter x:Key="InvBoolToVis" />
+        <converters:BoolToColorConverter x:Key="BoolToColor" />
+        <converters:BoolToTextConverter x:Key="BoolToText" />
+    </UserControl.Resources>
+
+    <Grid Margin="32,24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Grid Grid.Row="0" Margin="0,0,0,24">
+            <TextBlock Text="Servis Yönetimi" Style="{StaticResource SectionTitle}" FontSize="28" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Style="{StaticResource MaterialDesignFlatMidBgButton}" Background="#30229954" Foreground="{StaticResource SuccessGreenBrush}"
+                        Command="{Binding StartAllCommand}" Padding="16,8" Margin="0,0,8,0" materialDesign:ButtonAssist.CornerRadius="10" FontSize="12">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="PlayCircle" Width="18" Height="18" Margin="0,0,6,0" VerticalAlignment="Center" />
+                        <TextBlock Text="Hepsini Başlat" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Button>
+                <Button Style="{StaticResource MaterialDesignFlatMidBgButton}" Background="#30EF4444" Foreground="{StaticResource ErrorRedBrush}"
+                        Command="{Binding StopAllCommand}" Padding="16,8" Margin="0,0,8,0" materialDesign:ButtonAssist.CornerRadius="10" FontSize="12">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="StopCircle" Width="18" Height="18" Margin="0,0,6,0" VerticalAlignment="Center" />
+                        <TextBlock Text="Hepsini Durdur" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Button>
+                <Button Style="{StaticResource MaterialDesignFlatMidBgButton}" Background="#20FFFFFF" Foreground="{StaticResource TextSecondaryBrush}"
+                        Command="{Binding RefreshCommand}" Padding="16,8" materialDesign:ButtonAssist.CornerRadius="10" FontSize="12">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="Refresh" Width="18" Height="18" Margin="0,0,6,0" VerticalAlignment="Center" />
+                        <TextBlock Text="Yenile" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </Grid>
+
+        <!-- Stats -->
+        <Grid Grid.Row="1" Margin="0,0,0,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0" Background="#30229954" CornerRadius="12" Padding="20" Margin="0,0,8,0">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="CheckCircle" Width="24" Height="24" Foreground="{StaticResource SuccessGreenBrush}" Margin="0,0,12,0" VerticalAlignment="Center" />
+                    <TextBlock VerticalAlignment="Center" Foreground="{StaticResource TextPrimaryBrush}" FontSize="14">
+                        <Run Text="{Binding RunningCount}" FontWeight="Bold" FontSize="20" /><Run Text=" aktif servis" />
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+            <Border Grid.Column="1" Background="#30EF4444" CornerRadius="12" Padding="20" Margin="8,0,0,0">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="StopCircle" Width="24" Height="24" Foreground="{StaticResource ErrorRedBrush}" Margin="0,0,12,0" VerticalAlignment="Center" />
+                    <TextBlock VerticalAlignment="Center" Foreground="{StaticResource TextPrimaryBrush}" FontSize="14">
+                        <Run Text="{Binding StoppedCount}" FontWeight="Bold" FontSize="20" /><Run Text=" kapali servis" />
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- Services List -->
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding Services}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Background="{StaticResource CardBgBrush}" CornerRadius="14" Padding="20" Margin="0,0,0,10">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Status Indicator -->
+                                <Border Grid.Column="0" Width="44" Height="44" CornerRadius="12" Margin="0,0,16,0"
+                                        Background="{Binding IsRunning, Converter={StaticResource BoolToColor}, ConverterParameter=#30229954|#30EF4444}">
+                                    <materialDesign:PackIcon Width="22" Height="22" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                        Kind="{Binding IsRunning, Converter={StaticResource BoolToText}, ConverterParameter=DatabaseCheck|DatabaseOff}"
+                                        Foreground="{Binding IsRunning, Converter={StaticResource BoolToColor}, ConverterParameter=#FF22C55E|#FFEF4444}" />
+                                </Border>
+
+                                <!-- Info -->
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Name}" FontSize="15" FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}" />
+                                    <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                        <TextBlock FontSize="11" Foreground="{StaticResource TextMutedBrush}">
+                                            <Run Text="Port: " /><Run Text="{Binding Port}" Foreground="{StaticResource AccentTealBrush}" />
+                                        </TextBlock>
+                                        <TextBlock Text="  |  " Foreground="{StaticResource TextMutedBrush}" FontSize="11" />
+                                        <TextBlock FontSize="11" Foreground="{StaticResource TextMutedBrush}">
+                                            <Run Text="PID: " /><Run Text="{Binding ProcessId, TargetNullValue='-'}" Foreground="{StaticResource TextSecondaryBrush}" />
+                                        </TextBlock>
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <!-- Status Badge -->
+                                <Border Grid.Column="2" CornerRadius="8" Padding="12,6" Margin="0,0,12,0" VerticalAlignment="Center"
+                                        Background="{Binding IsRunning, Converter={StaticResource BoolToColor}, ConverterParameter=#20229954|#20EF4444}">
+                                    <TextBlock Text="{Binding IsRunning, Converter={StaticResource BoolToText}, ConverterParameter=Aktif|Kapali}" FontSize="11" FontWeight="SemiBold"
+                                               Foreground="{Binding IsRunning, Converter={StaticResource BoolToColor}, ConverterParameter=#FF22C55E|#FFEF4444}" />
+                                </Border>
+
+                                <!-- Busy -->
+                                <ProgressBar Grid.Column="3" Style="{StaticResource MaterialDesignCircularProgressBar}" IsIndeterminate="True"
+                                             Width="24" Height="24" Margin="0,0,8,0"
+                                             Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}}" />
+
+                                <!-- Actions -->
+                                <StackPanel Grid.Column="4" Orientation="Horizontal" VerticalAlignment="Center"
+                                            Visibility="{Binding IsBusy, Converter={StaticResource InvBoolToVis}}">
+                                    <Button Style="{StaticResource MaterialDesignFlatButton}" Padding="8" Width="38" Height="38"
+                                            Command="{Binding ToggleCommand}" ToolTip="Başlat/Durdur">
+                                        <materialDesign:PackIcon Width="20" Height="20"
+                                            Kind="{Binding IsRunning, Converter={StaticResource BoolToText}, ConverterParameter=Stop|Play}"
+                                            Foreground="{Binding IsRunning, Converter={StaticResource BoolToColor}, ConverterParameter=#FFEF4444|#FF22C55E}" />
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFlatButton}" Padding="8" Width="38" Height="38"
+                                            Command="{Binding RestartCommand}" ToolTip="Yeniden Başlat">
+                                        <materialDesign:PackIcon Kind="Restart" Width="20" Height="20" Foreground="{StaticResource TextSecondaryBrush}" />
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

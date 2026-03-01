@@ -1,0 +1,115 @@
+<UserControl x:Class="DevARIManager.App.Views.ToolsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:converters="clr-namespace:DevARIManager.App.Converters">
+
+    <UserControl.Resources>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVis" />
+        <converters:InverseBoolToVisibilityConverter x:Key="InvBoolToVis" />
+        <converters:BoolToColorConverter x:Key="BoolToColor" />
+    </UserControl.Resources>
+
+    <Grid Margin="32,24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <TextBlock Grid.Row="0" Text="Araç Yönetimi" Style="{StaticResource SectionTitle}" FontSize="28" />
+
+        <!-- Search & Filter -->
+        <Grid Grid.Row="1" Margin="0,0,0,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBox Grid.Column="0" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                     materialDesign:HintAssist.Hint="Arac ara..."
+                     materialDesign:TextFieldAssist.HasClearButton="True"
+                     Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                     Foreground="{StaticResource TextPrimaryBrush}"
+                     FontSize="13" Margin="0,0,16,0" Padding="12,10" />
+
+            <ComboBox Grid.Column="1" ItemsSource="{Binding Categories}" SelectedItem="{Binding SelectedCategory}"
+                      Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                      Foreground="{StaticResource TextPrimaryBrush}"
+                      Width="180" FontSize="13" />
+        </Grid>
+
+        <!-- Loading -->
+        <StackPanel Grid.Row="2" Visibility="{Binding IsLoading, Converter={StaticResource BoolToVis}}" HorizontalAlignment="Center" Margin="0,60">
+            <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" IsIndeterminate="True" Width="48" Height="48" />
+            <TextBlock Text="Araçlar yükleniyor..." Foreground="{StaticResource TextSecondaryBrush}" Margin="0,12,0,0" HorizontalAlignment="Center" />
+        </StackPanel>
+
+        <!-- Tools Grid -->
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" Visibility="{Binding IsLoading, Converter={StaticResource InvBoolToVis}}">
+            <ItemsControl ItemsSource="{Binding Tools}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Width="280" Background="{StaticResource CardBgBrush}" CornerRadius="14" Padding="20" Margin="0,0,12,12">
+                            <StackPanel>
+                                <!-- Header -->
+                                <Grid Margin="0,0,0,12">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Width="40" Height="40" CornerRadius="10"
+                                                Background="{Binding IsInstalled, Converter={StaticResource BoolToColor}, ConverterParameter=#30967AED|#20FFFFFF}">
+                                            <materialDesign:PackIcon Kind="PackageVariant" Width="20" Height="20" Foreground="{StaticResource TextPrimaryBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                        </Border>
+                                        <StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Name}" FontSize="15" FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}" />
+                                            <TextBlock Text="{Binding Category}" FontSize="10" Foreground="{StaticResource TextMutedBrush}" />
+                                        </StackPanel>
+                                    </StackPanel>
+
+                                    <Ellipse Width="10" Height="10" HorizontalAlignment="Right" VerticalAlignment="Top"
+                                             Fill="{Binding IsInstalled, Converter={StaticResource BoolToColor}, ConverterParameter=#FF22C55E|#FF6B7280}" />
+                                </Grid>
+
+                                <TextBlock Text="{Binding Description}" FontSize="12" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,8" TextWrapping="Wrap" />
+
+                                <!-- Version -->
+                                <TextBlock FontSize="11" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,12"
+                                           Visibility="{Binding IsInstalled, Converter={StaticResource BoolToVis}}">
+                                    <Run Text="Versiyon: " /><Run Text="{Binding InstalledVersion}" Foreground="{StaticResource AccentTealBrush}" />
+                                </TextBlock>
+
+                                <!-- Status Text -->
+                                <TextBlock Text="{Binding StatusText}" FontSize="11" Foreground="{StaticResource WarningYellowBrush}" Margin="0,0,0,8"
+                                           Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}}" />
+
+                                <!-- Busy Indicator -->
+                                <ProgressBar Style="{StaticResource MaterialDesignLinearProgressBar}" IsIndeterminate="True" Height="3" Margin="0,0,0,8"
+                                             Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}}" />
+
+                                <!-- Action Buttons -->
+                                <StackPanel Orientation="Horizontal" Visibility="{Binding IsBusy, Converter={StaticResource InvBoolToVis}}">
+                                    <Button Content="Yükle" Command="{Binding InstallCommand}"
+                                            Style="{StaticResource MaterialDesignFlatMidBgButton}"
+                                            Background="{StaticResource AccentPurpleBrush}" Foreground="White"
+                                            FontSize="11" Padding="16,6" Margin="0,0,8,0" materialDesign:ButtonAssist.CornerRadius="8"
+                                            Visibility="{Binding IsInstalled, Converter={StaticResource InvBoolToVis}}" />
+
+                                    <Button Content="Kaldir" Command="{Binding UninstallCommand}"
+                                            Style="{StaticResource MaterialDesignFlatMidBgButton}"
+                                            Background="#30EF4444" Foreground="{StaticResource ErrorRedBrush}"
+                                            FontSize="11" Padding="16,6" materialDesign:ButtonAssist.CornerRadius="8"
+                                            Visibility="{Binding IsInstalled, Converter={StaticResource BoolToVis}}" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
+</UserControl>
