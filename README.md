@@ -8,43 +8,43 @@
 
 <h1 align="center">DevARI Setup</h1>
 <p align="center">
-  <strong>Windows 10/11 için Gelishtirici Araclari Yoneticisi</strong><br>
-  <em>20+ araci tek tikla yukle, yonet ve yapilandir</em>
+  <strong>Windows 10/11 için Geliştirici Araçları Yöneticisi</strong><br>
+  <em>20+ aracı tek tıkla yükle, yönet ve yapılandır</em>
 </p>
 
 <p align="center">
-  <a href="https://github.com/davutari/DevARISetup/releases/latest"><strong>Indir</strong></a> ·
-  <a href="#ozellikler">Ozellikler</a> ·
-  <a href="#desteklenen-araclar">Araclar</a> ·
+  <a href="https://github.com/davutari/DevARISetup/releases/latest"><strong>İndir</strong></a> ·
+  <a href="#özellikler">Özellikler</a> ·
+  <a href="#desteklenen-araçlar">Araçlar</a> ·
   <a href="#kurulum">Kurulum</a> ·
-  <a href="#ekran-goruntuleri">Ekran Goruntuleri</a>
+  <a href="#ekran-görüntüleri">Ekran Görüntüleri</a>
 </p>
 
 ---
 
 ## Nedir?
 
-DevARI Setup, Windows uzerinde gelistirici ortamini hizla kurmak icin tasarlanmis bir masaustu uygulamasidir. **Winget** ve **Chocolatey** paket yoneticilerini kullanarak Node.js, Python, Docker, Git ve daha bircok araci tek bir arayuzden yonetmenizi saglar.
+DevARI Setup, Windows üzerinde geliştirici ortamını hızla kurmak için tasarlanmış bir masaüstü uygulamasıdır. **Winget** ve **Chocolatey** paket yöneticilerini kullanarak Node.js, Python, Docker, Git ve daha birçok aracı tek bir arayüzden yönetmenizi sağlar.
 
-Yeni bir bilgisayar mi aldiniz? Formati mi attiniz? DevARI Setup ile tum gelistirme ortaminizi dakikalar icinde yeniden kurun.
+Yeni bir bilgisayar mı aldınız? Formatı mı attınız? DevARI Setup ile tüm geliştirme ortamınızı dakikalar içinde yeniden kurun.
 
-## Ozellikler
+## Özellikler
 
-| Ozellik | Aciklama |
+| Özellik | Açıklama |
 |---------|----------|
-| **Tek Tikla Kurulum** | Winget & Chocolatey ile 20+ araci otomatik yukleyin |
-| **Servis Yonetimi** | PostgreSQL, MySQL, MongoDB, Redis, Docker, Nginx, Cassandra servislerini baslat/durdur |
-| **Ortam Denetimi** | PATH, JAVA_HOME, GOPATH gibi ortam degiskenlerini otomatik kontrol ve duzeltme |
-| **Saglik Kontrolu** | Tum araclarin ve servislerin durumunu tek tikla kontrol edin |
-| **Profil Yonetimi** | Farkli projeler icin farkli arac setleri tanimlayip gecis yapin |
-| **Canli Log Akisi** | Kurulum ve yapilandirma islemlerini terminal gorunumunde canli takip |
-| **Modern Arayuz** | Material Design temali koyu tema, gradient kartlar, animasyonlar |
-| **Yonetici Destegi** | UAC ile gerektiginde admin yetkisi otomatik ister |
+| **Tek Tıkla Kurulum** | Winget & Chocolatey ile 20+ aracı otomatik yükleyin |
+| **Servis Yönetimi** | PostgreSQL, MySQL, MongoDB, Redis, Docker, Nginx, Cassandra servislerini başlat/durdur |
+| **Ortam Denetimi** | PATH, JAVA_HOME, GOPATH gibi ortam değişkenlerini otomatik kontrol ve düzeltme |
+| **Sağlık Kontrolü** | Tüm araçların ve servislerin durumunu tek tıkla kontrol edin |
+| **Profil Yönetimi** | Farklı projeler için farklı araç setleri tanımlayıp geçiş yapın |
+| **Canlı Log Akışı** | Kurulum ve yapılandırma işlemlerini terminal görünümünde canlı takip |
+| **Modern Arayüz** | Material Design temalı koyu tema, gradient kartlar, animasyonlar |
+| **Yönetici Desteği** | UAC ile gerektiğinde admin yetkisi otomatik ister |
 
-## Desteklenen Araclar
+## Desteklenen Araçlar
 
 ### Runtime & Diller
-| Arac | Paket Yoneticisi | ID |
+| Araç | Paket Yöneticisi | ID |
 |------|------------------|----|
 | Node.js LTS | winget | `OpenJS.NodeJS.LTS` |
 | Python 3.13 | winget | `Python.Python.3.13` |
@@ -52,8 +52,8 @@ Yeni bir bilgisayar mi aldiniz? Formati mi attiniz? DevARI Setup ile tum gelisti
 | Go | winget | `GoLang.Go` |
 | Rust | winget | `Rustlang.Rustup` |
 
-### Veritabani
-| Arac | Paket Yoneticisi | ID |
+### Veritabanı
+| Araç | Paket Yöneticisi | ID |
 |------|------------------|----|
 | PostgreSQL 17 | winget | `PostgreSQL.PostgreSQL.17` |
 | MySQL | winget | `Oracle.MySQL` |
@@ -62,8 +62,8 @@ Yeni bir bilgisayar mi aldiniz? Formati mi attiniz? DevARI Setup ile tum gelisti
 | Apache Cassandra | choco | `apache-cassandra` |
 | MongoDB Compass | winget | `MongoDB.Compass.Full` |
 
-### DevOps & Araclar
-| Arac | Paket Yoneticisi | ID |
+### DevOps & Araçlar
+| Araç | Paket Yöneticisi | ID |
 |------|------------------|----|
 | Docker Desktop | winget | `Docker.DockerDesktop` |
 | Git | winget | `Git.Git` |
@@ -72,8 +72,8 @@ Yeni bir bilgisayar mi aldiniz? Formati mi attiniz? DevARI Setup ile tum gelisti
 | Nginx | choco | `nginx` |
 | Laragon | choco | `laragon` |
 
-### Mobil Gelistirme
-| Arac | Paket Yoneticisi | ID |
+### Mobil Geliştirme
+| Araç | Paket Yöneticisi | ID |
 |------|------------------|----|
 | Flutter SDK | choco | `flutter` |
 | Dart SDK | choco | `dart-sdk` |
@@ -81,11 +81,11 @@ Yeni bir bilgisayar mi aldiniz? Formati mi attiniz? DevARI Setup ile tum gelisti
 
 ## Kurulum
 
-### Hazir Calistirma (Onerilen)
+### Hazır Çalıştırma (Önerilen)
 
-1. [**Son surumu indirin**](https://github.com/davutari/DevARISetup/releases/latest) (~66 MB)
-2. ZIP dosyasini acin
-3. `DevARIManager.App.exe` dosyasini calistirin
+1. [**Son sürümü indirin**](https://github.com/davutari/DevARISetup/releases/latest) (~66 MB)
+2. ZIP dosyasını açın
+3. `DevARIManager.App.exe` dosyasını çalıştırın
 
 > **Not:** .NET runtime gerektirmez. Tek dosya, self-contained uygulama.
 
@@ -99,14 +99,14 @@ cd DevARISetup
 # Derleyin
 dotnet build DevARIManager.sln
 
-# Calistirin
+# Çalıştırın
 dotnet run --project src/DevARIManager.App
 
 # Self-contained publish
 dotnet publish src/DevARIManager.App -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true
 ```
 
-**Gereksinimler (derleme icin):**
+**Gereksinimler (derleme için):**
 - .NET 8.0 SDK
 - Windows 10/11
 
@@ -115,63 +115,63 @@ dotnet publish src/DevARIManager.App -c Release -r win-x64 --self-contained true
 ```
 DevARISetup/
 ├── src/
-│   ├── DevARIManager.App/          # WPF UI katmani
-│   │   ├── Views/                  # XAML sayfalari
+│   ├── DevARIManager.App/          # WPF UI katmanı
+│   │   ├── Views/                  # XAML sayfaları
 │   │   ├── ViewModels/             # MVVM ViewModel'ler
-│   │   ├── Converters/             # WPF degistiriciler
+│   │   ├── Converters/             # WPF dönüştürücüler
 │   │   ├── Themes/                 # Material Design tema
 │   │   └── MainWindow.xaml         # Ana pencere (sidebar navigasyon)
 │   │
-│   └── DevARIManager.Core/         # Is mantigi katmani
+│   └── DevARIManager.Core/         # İş mantığı katmanı
 │       ├── Models/                 # Veri modelleri
-│       ├── Services/               # Servis katmani
-│       │   ├── ToolManager.cs      # Arac yukle/kaldir/kontrol
-│       │   ├── ServiceManager.cs   # Servis baslat/durdur
-│       │   ├── HealthChecker.cs    # Saglik kontrolu
-│       │   ├── EnvironmentManager.cs # PATH & ortam degiskenleri
-│       │   └── ProfileManager.cs   # Profil yonetimi
+│       ├── Services/               # Servis katmanı
+│       │   ├── ToolManager.cs      # Araç yükle/kaldır/kontrol
+│       │   ├── ServiceManager.cs   # Servis başlat/durdur
+│       │   ├── HealthChecker.cs    # Sağlık kontrolü
+│       │   ├── EnvironmentManager.cs # PATH & ortam değişkenleri
+│       │   └── ProfileManager.cs   # Profil yönetimi
 │       └── Helpers/
-│           └── ProcessRunner.cs    # PowerShell/CMD calistirma
+│           └── ProcessRunner.cs    # PowerShell/CMD çalıştırma
 │
-├── website/                        # Tanitim web sitesi
+├── website/                        # Tanıtım web sitesi
 │   └── index.html                  # Single-page landing page
 │
 └── docs/
     └── PRD.md                      # Proje gereksinimleri
 ```
 
-### Teknoloji Yigini
+### Teknoloji Yığını
 
 - **UI Framework:** WPF (.NET 8)
 - **MVVM:** CommunityToolkit.Mvvm 8.4
 - **Tema:** MaterialDesignThemes 5.1.0
 - **DI:** Microsoft.Extensions.DependencyInjection
-- **Paket Yoneticileri:** Winget, Chocolatey
+- **Paket Yöneticileri:** Winget, Chocolatey
 - **Hedef:** `net8.0-windows` (Windows 10/11 x64)
 
-## Nasil Calisir?
+## Nasıl Çalışır?
 
 ```
-Kullanici → Arac Sec → [Winget/Choco] → Otomatik Yukle → PATH Ayarla → Hazir!
+Kullanıcı → Araç Seç → [Winget/Choco] → Otomatik Yükle → PATH Ayarla → Hazır!
 ```
 
-1. **Arac Tarama:** Uygulama baslatildiginda tum araclarin yuklu olup olmadigini kontrol eder
-2. **Tek Tikla Kurulum:** Secilen araci Winget veya Chocolatey ile yukler
-3. **Bagimlilk Yonetimi:** Ornegin Flutter icin otomatik olarak Git ve JDK kontrol eder
-4. **Servis Yonetimi:** Veritabani ve sunucu servislerini Windows Service veya process olarak yonetir
-5. **Ortam Ayarlari:** PATH, JAVA_HOME gibi ortam degiskenlerini otomatik yapilandirir
+1. **Araç Tarama:** Uygulama başlatıldığında tüm araçların yüklü olup olmadığını kontrol eder
+2. **Tek Tıkla Kurulum:** Seçilen aracı Winget veya Chocolatey ile yükler
+3. **Bağımlılık Yönetimi:** Örneğin Flutter için otomatik olarak Git ve JDK kontrol eder
+4. **Servis Yönetimi:** Veritabanı ve sunucu servislerini Windows Service veya process olarak yönetir
+5. **Ortam Ayarları:** PATH, JAVA_HOME gibi ortam değişkenlerini otomatik yapılandırır
 
-## Katkida Bulunma
+## Katkıda Bulunma
 
 1. Bu repoyu fork edin
-2. Feature branch olusturun (`git checkout -b feature/yeni-ozellik`)
-3. Degisikliklerinizi commit edin (`git commit -m 'Yeni ozellik ekle'`)
+2. Feature branch oluşturun (`git checkout -b feature/yeni-ozellik`)
+3. Değişikliklerinizi commit edin (`git commit -m 'Yeni özellik ekle'`)
 4. Branch'i push edin (`git push origin feature/yeni-ozellik`)
-5. Pull Request acin
+5. Pull Request açın
 
 ## Lisans
 
-Bu proje MIT lisansi ile lisanslanmistir. Detaylar icin [LICENSE](LICENSE) dosyasina bakin.
+Bu proje MIT lisansı ile lisanslanmıştır. Detaylar için [LICENSE](LICENSE) dosyasına bakın.
 
 ---
 
