@@ -15,6 +15,7 @@
 
 <p align="center">
   <a href="https://github.com/davutari/DevARISetup/releases/latest"><strong>İndir</strong></a> ·
+  <a href="linux/README.md"><strong>Linux Indirme</strong></a> ·
   <a href="#özellikler">Özellikler</a> ·
   <a href="#desteklenen-araçlar">Araçlar</a> ·
   <a href="#kurulum">Kurulum</a> ·
@@ -114,6 +115,7 @@ dotnet publish src/DevARIManager.App -c Release -r win-x64 --self-contained true
 ### Linux Port (CLI)
 
 Linux portu, WPF yerine terminal odakli bir uygulama olarak `src/DevARIManager.Linux` altinda sunulmustur.
+Linux indirme ve kurulum kisayolu icin: `linux/README.md`
 
 ```bash
 # Linux CLI calistirma
