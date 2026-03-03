@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=DevARI Manager
+Comment=DevARI Linux tool manager
+Exec=env APPIMAGE_EXTRACT_AND_RUN=1 devari-manager
+Icon=devari-manager
+Terminal=false
+Categories=Development;Utility;

@@ -1,0 +1,255 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        x:Class="DevARIManager.Linux.Gui.Views.MainWindow"
+        x:Name="Root"
+        Width="1360"
+        Height="860"
+        MinWidth="1120"
+        MinHeight="720"
+        Title="DevARI Manager - Linux"
+        Background="#070B1A">
+
+  <Window.Styles>
+    <Style Selector="Border.panel">
+      <Setter Property="CornerRadius" Value="14" />
+      <Setter Property="Padding" Value="14" />
+      <Setter Property="Background" Value="#1A1F3A" />
+    </Style>
+    <Style Selector="Button.side">
+      <Setter Property="HorizontalContentAlignment" Value="Left" />
+      <Setter Property="Padding" Value="14,10" />
+      <Setter Property="Margin" Value="0,0,0,8" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Foreground" Value="#C3CBE5" />
+      <Setter Property="CornerRadius" Value="10" />
+      <Setter Property="BorderThickness" Value="0" />
+    </Style>
+    <Style Selector="Button.side:pointerover">
+      <Setter Property="Background" Value="#2E3461" />
+      <Setter Property="Foreground" Value="White" />
+    </Style>
+    <Style Selector="Button.primary">
+      <Setter Property="Padding" Value="16,10" />
+      <Setter Property="CornerRadius" Value="10" />
+      <Setter Property="Background" Value="#7E3AF2" />
+      <Setter Property="Foreground" Value="White" />
+      <Setter Property="BorderThickness" Value="0" />
+    </Style>
+    <Style Selector="Button.primary:pointerover">
+      <Setter Property="Background" Value="#8B4BF5" />
+    </Style>
+    <Style Selector="Button.ghost">
+      <Setter Property="Padding" Value="12,8" />
+      <Setter Property="CornerRadius" Value="10" />
+      <Setter Property="BorderBrush" Value="#444A74" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="Background" Value="#2A2F53" />
+      <Setter Property="Foreground" Value="#D9DFF5" />
+    </Style>
+  </Window.Styles>
+
+  <Border Margin="10" CornerRadius="14" ClipToBounds="True">
+    <Grid ColumnDefinitions="270,*">
+      <Border Grid.Column="0" Background="#182246" Padding="16">
+        <Grid RowDefinitions="Auto,Auto,*,Auto">
+          <StackPanel>
+            <TextBlock Text="DevARI" FontSize="30" FontWeight="Bold" Foreground="White" />
+            <TextBlock Text="Manager" FontSize="12" Foreground="#A8B0CC" Margin="0,-4,0,0" />
+            <Border Margin="0,14,0,0" Background="#343B63" CornerRadius="9" Padding="10,6">
+              <TextBlock Text="v1.0.3 - Hazir" Foreground="#CBE8D4" FontSize="12" />
+            </Border>
+          </StackPanel>
+
+          <StackPanel Grid.Row="1" Margin="0,18,0,0">
+            <TextBlock Text="ANA MENU" Foreground="#818CB0" FontSize="11" Margin="4,0,0,8" />
+            <Button Classes="side" Content="Dashboard" Command="{Binding MenuCommand}" CommandParameter="dashboard" />
+            <Button Classes="side" Content="Araclar" Command="{Binding MenuCommand}" CommandParameter="tools" />
+            <Button Classes="side" Content="Servisler" Command="{Binding MenuCommand}" CommandParameter="services" />
+            <Button Classes="side" Content="Saglik Taramasi" Command="{Binding MenuCommand}" CommandParameter="health" />
+            <Button Classes="side" Content="Ayarlar" Command="{Binding MenuCommand}" CommandParameter="settings" />
+          </StackPanel>
+
+          <Border Grid.Row="3" Background="#27345D" CornerRadius="10" Padding="12">
+            <StackPanel>
+              <TextBlock Text="DevARI Setup" Foreground="White" FontWeight="SemiBold" />
+              <TextBlock Text="Developed by Davut ARI and Claude" Foreground="#A7B2D2" FontSize="11" />
+            </StackPanel>
+          </Border>
+        </Grid>
+      </Border>
+
+      <Border Grid.Column="1" Background="#080C1F" Padding="20,16">
+        <Grid RowDefinitions="Auto,* ,Auto">
+          <Grid ColumnDefinitions="*,Auto">
+            <StackPanel>
+              <TextBlock Text="DevARI Control Center" FontSize="42" FontWeight="Bold" Foreground="White" />
+              <TextBlock Text="Kurulum, servis ve ayar yonetimi tek panelde" Foreground="#98A3C7" />
+            </StackPanel>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10">
+              <Button Classes="ghost" Content="Yenile" Command="{Binding RefreshCommand}" />
+              <Button Classes="primary" Content="Tumunu Kontrol Et" Command="{Binding CheckAllCommand}" />
+            </StackPanel>
+          </Grid>
+
+          <Grid Grid.Row="1">
+            <Grid IsVisible="{Binding IsDashboardVisible}" RowDefinitions="Auto,Auto,*">
+              <Grid ColumnDefinitions="*,*,*,*" Margin="0,14,0,0">
+                <Border Classes="panel" Margin="0,0,10,0" Background="#2A1F59">
+                  <StackPanel>
+                    <TextBlock Text="{Binding InstalledCount}" FontSize="44" FontWeight="Bold" Foreground="White" />
+                    <TextBlock Text="Kurulu Arac" Foreground="#C8B7F4" />
+                    <TextBlock Text="{Binding TotalTools, StringFormat='Toplam: {0}'}" Foreground="#AFA5DC" FontSize="11" />
+                  </StackPanel>
+                </Border>
+                <Border Grid.Column="1" Classes="panel" Margin="0,0,10,0" Background="#1E4C68">
+                  <StackPanel>
+                    <TextBlock Text="{Binding ActiveServiceCount}" FontSize="44" FontWeight="Bold" Foreground="White" />
+                    <TextBlock Text="Aktif Servis" Foreground="#9CE9F3" />
+                  </StackPanel>
+                </Border>
+                <Border Grid.Column="2" Classes="panel" Margin="0,0,10,0" Background="#6D2B37">
+                  <StackPanel>
+                    <TextBlock Text="{Binding NotInstalledCount}" FontSize="44" FontWeight="Bold" Foreground="White" />
+                    <TextBlock Text="Eksik Arac" Foreground="#FFB6C1" />
+                  </StackPanel>
+                </Border>
+                <Border Grid.Column="3" Classes="panel" Background="#2A3D85">
+                  <StackPanel>
+                    <TextBlock Text="{Binding HealthPercent, StringFormat='{}{0:F0}%'}" FontSize="44" FontWeight="Bold" Foreground="White" />
+                    <TextBlock Text="Saglik Puani" Foreground="#C7D5FF" />
+                  </StackPanel>
+                </Border>
+              </Grid>
+
+              <Border Grid.Row="1" Classes="panel" Margin="0,14,0,0" Background="#242846">
+                <Grid ColumnDefinitions="2*,130,130,Auto">
+                  <TextBox Watermark="Arac ara..."
+                           Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                           Background="#131938"
+                           BorderBrush="#3A416C"
+                           Foreground="#DFE5FA" />
+                  <ComboBox Grid.Column="1" Margin="10,0,0,0"
+                            ItemsSource="{Binding FilterOptions}"
+                            SelectedItem="{Binding SelectedFilter}" />
+                  <ComboBox Grid.Column="2" Margin="10,0,0,0"
+                            ItemsSource="{Binding SortOptions}"
+                            SelectedItem="{Binding SelectedSort}" />
+                  <Button Grid.Column="3" Classes="primary" Margin="10,0,0,0" Content="Kontrol" Command="{Binding CheckAllCommand}" />
+                </Grid>
+              </Border>
+
+              <ScrollViewer Grid.Row="2" Margin="0,14,0,0">
+                <ItemsControl ItemsSource="{Binding VisibleTools}">
+                  <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <WrapPanel ItemWidth="338" />
+                    </ItemsPanelTemplate>
+                  </ItemsControl.ItemsPanel>
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                      <Border Classes="panel" Width="326" Margin="0,0,12,12" Background="#232744">
+                        <Grid RowDefinitions="Auto,Auto,Auto,Auto">
+                          <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel>
+                              <TextBlock Text="{Binding DisplayName}" FontWeight="Bold" FontSize="25" Foreground="White" />
+                              <TextBlock Text="{Binding Id}" FontSize="11" Foreground="#9FA8CB" />
+                            </StackPanel>
+                            <Ellipse Grid.Column="1" Width="10" Height="10" Fill="{Binding StatusColor}" VerticalAlignment="Top" />
+                          </Grid>
+                          <TextBlock Grid.Row="1" Margin="0,10,0,0" Text="{Binding Installer, StringFormat='Installer: {0}'}" Foreground="#93A2D2" />
+                          <TextBlock Grid.Row="2" Margin="0,4,0,0" Text="{Binding StatusLabel}" Foreground="#CDD6F3" />
+                          <StackPanel Grid.Row="3" Margin="0,12,0,0" Orientation="Horizontal" Spacing="8">
+                            <Button Classes="ghost" Content="Kontrol" Command="{Binding DataContext.CheckCommand, ElementName=Root}" CommandParameter="{Binding}" />
+                            <Button Classes="primary" Content="Kur" Command="{Binding DataContext.InstallCommand, ElementName=Root}" CommandParameter="{Binding}" />
+                            <Button Classes="ghost" Content="Kaldir" Command="{Binding DataContext.UninstallCommand, ElementName=Root}" CommandParameter="{Binding}" />
+                          </StackPanel>
+                        </Grid>
+                      </Border>
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+              </ScrollViewer>
+            </Grid>
+
+            <Grid IsVisible="{Binding IsServicesVisible}" RowDefinitions="Auto,Auto,*">
+              <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,14,0,0">
+                <Button Classes="ghost" Content="Yenile" Command="{Binding RefreshCommand}" />
+              </StackPanel>
+              <Grid Grid.Row="1" ColumnDefinitions="*,*" Margin="0,12,0,0">
+                <Border Classes="panel" Margin="0,0,10,0" Background="#0F4E42">
+                  <TextBlock Text="{Binding ActiveServiceCount, StringFormat='{}{0} aktif servis'}" Foreground="#D8FFF5" FontSize="24" FontWeight="Bold" />
+                </Border>
+                <Border Grid.Column="1" Classes="panel" Background="#5A1F2B">
+                  <TextBlock Text="{Binding InactiveServiceCount, StringFormat='{}{0} kapali servis'}" Foreground="#FFDDE3" FontSize="24" FontWeight="Bold" />
+                </Border>
+              </Grid>
+
+              <ScrollViewer Grid.Row="2" Margin="0,12,0,0">
+                <ItemsControl ItemsSource="{Binding ServiceTools}">
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                      <Border Classes="panel" Margin="0,0,0,10" Background="#202541">
+                        <Grid ColumnDefinitions="240,120,*,Auto,Auto,Auto">
+                          <StackPanel>
+                            <TextBlock Text="{Binding DisplayName}" Foreground="White" FontSize="24" FontWeight="Bold" />
+                            <TextBlock Text="{Binding ServiceName}" Foreground="#95A2CC" />
+                          </StackPanel>
+                          <Border Grid.Column="1" VerticalAlignment="Center" CornerRadius="8" Padding="8,3" Background="#31375A">
+                            <TextBlock Text="{Binding ServiceStateLabel}" Foreground="{Binding ServiceStateColor}" FontWeight="SemiBold" />
+                          </Border>
+                          <TextBlock Grid.Column="2" VerticalAlignment="Center" Text="systemctl servis yonetimi" Foreground="#90A0CE" />
+                          <Button Grid.Column="3" Classes="ghost" Margin="8,0,0,0" Content="Durum"
+                                  Command="{Binding DataContext.CheckServiceCommand, ElementName=Root}" CommandParameter="{Binding}" />
+                          <Button Grid.Column="4" Classes="primary" Margin="8,0,0,0" Content="Start"
+                                  Command="{Binding DataContext.StartServiceCommand, ElementName=Root}" CommandParameter="{Binding}" />
+                          <Button Grid.Column="5" Classes="ghost" Margin="8,0,0,0" Content="Stop"
+                                  Command="{Binding DataContext.StopServiceCommand, ElementName=Root}" CommandParameter="{Binding}" />
+                        </Grid>
+                      </Border>
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+              </ScrollViewer>
+            </Grid>
+
+            <Grid IsVisible="{Binding IsSettingsVisible}" RowDefinitions="Auto,Auto,Auto,*">
+              <TextBlock Margin="0,14,0,0" Text="Genel" FontSize="22" FontWeight="Bold" Foreground="White" />
+
+              <Border Grid.Row="1" Classes="panel" Margin="0,10,0,0" Background="#1F2340">
+                <StackPanel Spacing="10">
+                  <StackPanel>
+                    <TextBlock Text="Tema Secimi" Foreground="#A5B0D1" />
+                    <ComboBox Margin="0,6,0,0" ItemsSource="{Binding ThemeOptions}" SelectedItem="{Binding ThemeMode}" />
+                  </StackPanel>
+                  <ToggleSwitch IsChecked="{Binding AutoCheckAfterAction}" Content="Baslangicta guncelleme kontrolu" />
+                  <ToggleSwitch IsChecked="{Binding AutoStartEnabled}" Content="Servisleri otomatik baslat" />
+                  <ToggleSwitch IsChecked="{Binding UsePkexec}" Content="Yetkili komutlarda pkexec kullan" />
+                </StackPanel>
+              </Border>
+
+              <Border Grid.Row="2" Classes="panel" Margin="0,10,0,0" Background="#1F2340">
+                <StackPanel>
+                  <TextBlock Text="Kurulum Tercihleri" FontWeight="Bold" Foreground="White" />
+                  <TextBlock Margin="0,6,0,0" Text="Tercih Edilen Paket Yoneticisi" Foreground="#A5B0D1" />
+                  <ComboBox Margin="0,8,0,0" ItemsSource="{Binding InstallerOptions}" SelectedItem="{Binding InstallerPreference}" />
+                </StackPanel>
+              </Border>
+
+              <StackPanel Grid.Row="3" Margin="0,12,0,0" Orientation="Horizontal" Spacing="10">
+                <Button Classes="primary" Content="Kaydet" Command="{Binding SaveSettingsCommand}" />
+                <TextBlock VerticalAlignment="Center" Text="Ayarlar ~/.config/devari-manager/settings.json" Foreground="#98A5CA" />
+              </StackPanel>
+            </Grid>
+          </Grid>
+
+          <Border Grid.Row="2" Margin="0,12,0,0" CornerRadius="10" Background="#131938" Padding="12">
+            <TextBlock Text="{Binding ActivityLog}" Foreground="#D7DEF7" TextWrapping="Wrap" />
+          </Border>
+        </Grid>
+      </Border>
+    </Grid>
+  </Border>
+</Window>

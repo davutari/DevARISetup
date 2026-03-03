@@ -53,6 +53,7 @@ Desktop.ini
 
 ## Publish output
 publish/
+dist/
 
 ## Claude
 .claude/
