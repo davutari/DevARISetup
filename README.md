@@ -161,13 +161,42 @@ Kullanıcı → Araç Seç → [Winget/Choco] → Otomatik Yükle → PATH Ayarl
 4. **Servis Yönetimi:** Veritabanı ve sunucu servislerini Windows Service veya process olarak yönetir
 5. **Ortam Ayarları:** PATH, JAVA_HOME gibi ortam değişkenlerini otomatik yapılandırır
 
+## Katkıda Bulunanlar
+
+Bu projeye katkıda bulunan değerli geliştiricilere teşekkürler:
+
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/davutari">
+        <img src="https://github.com/davutari.png" width="80px;" alt="Davut ARI"/><br />
+        <sub><b>Davut ARI</b></sub>
+      </a><br />
+      <sub>Proje Sahibi & Ana Geliştirici</sub>
+    </td>
+    <td align="center">
+      <a href="https://github.com/MustafaKemal0146">
+        <img src="https://github.com/MustafaKemal0146.png" width="80px;" alt="Mustafa Kemal"/><br />
+        <sub><b>Mustafa Kemal</b></sub>
+      </a><br />
+      <sub>Linux Desteği (CLI, GUI & Paketleme)</sub>
+    </td>
+  </tr>
+</table>
+
+> 🎉 **Mustafa Kemal** — Linux desteği için harika bir katkı sağladı! Avalonia GUI, CLI aracı ve .deb/AppImage paketleme altyapısıyla projeyi çoklu platform desteğine taşıdı. Teşekkürler ve tebrikler! 👏
+
 ## Katkıda Bulunma
+
+Projeye katkıda bulunmak istiyorsanız:
 
 1. Bu repoyu fork edin
 2. Feature branch oluşturun (`git checkout -b feature/yeni-ozellik`)
 3. Değişikliklerinizi commit edin (`git commit -m 'Yeni özellik ekle'`)
 4. Branch'i push edin (`git push origin feature/yeni-ozellik`)
 5. Pull Request açın
+
+Her türlü katkıya açığız — yeni özellikler, hata düzeltmeleri, dokümantasyon iyileştirmeleri!
 
 ## Lisans
 
