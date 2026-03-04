@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\DevARIManager.Core\DevARIManager.Core.csproj" />
+    <ProjectReference Include="..\DevARIManager.Linux.Shared\DevARIManager.Linux.Shared.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>devari-manager-cli</AssemblyName>
+    <RootNamespace>DevARIManager.Linux</RootNamespace>
+  </PropertyGroup>
+</Project>

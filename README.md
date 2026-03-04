@@ -1,5 +1,6 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Platform-Windows%2010%2F11-blue?style=for-the-badge&logo=windows" alt="Platform">
+  <img src="https://img.shields.io/badge/Platform-Linux%20x64-green?style=for-the-badge&logo=linux" alt="Linux Platform">
   <img src="https://img.shields.io/badge/.NET-8.0-purple?style=for-the-badge&logo=dotnet" alt=".NET 8">
   <img src="https://img.shields.io/badge/UI-WPF%20%2B%20Material%20Design-blueviolet?style=for-the-badge" alt="WPF">
   <img src="https://img.shields.io/github/license/davutari/DevARISetup?style=for-the-badge" alt="License">
@@ -14,6 +15,7 @@
 
 <p align="center">
   <a href="https://github.com/davutari/DevARISetup/releases/latest"><strong>İndir</strong></a> ·
+  <a href="linux/README.md"><strong>Linux Indirme</strong></a> ·
   <a href="#özellikler">Özellikler</a> ·
   <a href="#desteklenen-araçlar">Araçlar</a> ·
   <a href="#kurulum">Kurulum</a> ·
@@ -110,6 +112,25 @@ dotnet publish src/DevARIManager.App -c Release -r win-x64 --self-contained true
 - .NET 8.0 SDK
 - Windows 10/11
 
+### Linux Port (CLI)
+
+Linux portu, WPF yerine terminal odakli bir uygulama olarak `src/DevARIManager.Linux` altinda sunulmustur.
+Linux indirme ve kurulum kisayolu icin: `linux/README.md`
+
+```bash
+# Linux CLI calistirma
+dotnet run --project src/DevARIManager.Linux -- list
+dotnet run --project src/DevARIManager.Linux -- check all
+dotnet run --project src/DevARIManager.Linux -- install git
+
+# .deb ve AppImage uretimi
+./packaging/linux/build-linux.sh 0.1.0
+```
+
+Uretilen dosyalar:
+- `dist/linux/devari-manager_0.1.0_amd64.deb`
+- `dist/linux/devari-manager-0.1.0-x86_64.AppImage` (sistemde `appimagetool` varsa)
+
 ## Mimari
 
 ```
@@ -143,11 +164,12 @@ DevARISetup/
 ### Teknoloji Yığını
 
 - **UI Framework:** WPF (.NET 8)
+- **Linux Port UI:** CLI (.NET 8)
 - **MVVM:** CommunityToolkit.Mvvm 8.4
 - **Tema:** MaterialDesignThemes 5.1.0
 - **DI:** Microsoft.Extensions.DependencyInjection
 - **Paket Yöneticileri:** Winget, Chocolatey
-- **Hedef:** `net8.0-windows` (Windows 10/11 x64)
+- **Hedef:** `net8.0-windows` (Windows GUI) + `net8.0` (Linux CLI)
 
 ## Nasıl Çalışır?
 

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <rect width="256" height="256" rx="32" fill="#1f2937"/>
+  <rect x="24" y="24" width="208" height="208" rx="24" fill="#111827"/>
+  <path d="M64 164 L112 92 L144 132 L176 88 L208 164 Z" fill="#10b981"/>
+  <circle cx="80" cy="80" r="12" fill="#3b82f6"/>
+  <text x="128" y="208" text-anchor="middle" font-family="monospace" font-size="28" fill="#e5e7eb">DevARI</text>
+</svg>

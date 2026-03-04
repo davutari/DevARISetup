@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace DevARIManager.Core.Helpers;
@@ -26,6 +27,8 @@ public interface IProcessRunner
 
 public class ProcessRunner : IProcessRunner
 {
+    private static bool IsWindows => RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+
     public async Task<ProcessResult> RunAsync(string command, string? arguments = null, CancellationToken ct = default)
     {
         try
@@ -128,6 +131,13 @@ public class ProcessRunner : IProcessRunner
 
     public async Task<ProcessResult> RunElevatedAsync(string command, string arguments, IProgress<string>? progress, CancellationToken ct = default)
     {
+        if (!IsWindows)
+        {
+            // Linux/macOS: best effort elevated run through sudo.
+            progress?.Report("[elevated] sudo ile çalıştırılıyor...");
+            return await RunWithLiveOutputAsync("sudo", $"{command} {arguments}", progress, ct);
+        }
+
         var logFile = Path.Combine(Path.GetTempPath(), $"devari_elevated_{Guid.NewGuid():N}.log");
         try
         {
@@ -204,15 +214,26 @@ public class ProcessRunner : IProcessRunner
     public async Task<ProcessResult> RunPowerShellAsync(string script, CancellationToken ct = default)
     {
         var escapedScript = script.Replace("\"", "\\\"");
-        return await RunAsync("powershell.exe",
-            $"-NoProfile -NonInteractive -ExecutionPolicy Bypass -Command \"{escapedScript}\"", ct);
+        if (IsWindows)
+        {
+            return await RunAsync("powershell.exe",
+                $"-NoProfile -NonInteractive -ExecutionPolicy Bypass -Command \"{escapedScript}\"", ct);
+        }
+
+        return await RunAsync("pwsh", $"-NoProfile -NonInteractive -Command \"{escapedScript}\"", ct);
     }
 
     public async Task<ProcessResult> RunPowerShellWithProgressAsync(string script, IProgress<string>? progress, CancellationToken ct = default)
     {
         var escapedScript = script.Replace("\"", "\\\"");
-        return await RunWithLiveOutputAsync("powershell.exe",
-            $"-NoProfile -NonInteractive -ExecutionPolicy Bypass -Command \"{escapedScript}\"", progress, ct);
+        if (IsWindows)
+        {
+            return await RunWithLiveOutputAsync("powershell.exe",
+                $"-NoProfile -NonInteractive -ExecutionPolicy Bypass -Command \"{escapedScript}\"", progress, ct);
+        }
+
+        return await RunWithLiveOutputAsync("pwsh",
+            $"-NoProfile -NonInteractive -Command \"{escapedScript}\"", progress, ct);
     }
 
     public async Task<string> GetCommandOutputAsync(string command, string? arguments = null)
@@ -223,7 +244,9 @@ public class ProcessRunner : IProcessRunner
 
     public async Task<bool> CommandExistsAsync(string command)
     {
-        var result = await RunAsync("where", command);
+        var result = IsWindows
+            ? await RunAsync("where", command)
+            : await RunAsync("bash", $"-lc \"command -v {command}\"");
         return result.Success && !string.IsNullOrWhiteSpace(result.Output);
     }
 }
