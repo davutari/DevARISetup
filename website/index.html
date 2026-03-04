@@ -310,7 +310,7 @@
         }
         .app-preview {
             width: 100%;
-            max-width: 560px;
+            max-width: 620px;
             border-radius: var(--radius);
             border: 1px solid var(--border);
             overflow: hidden;
@@ -331,64 +331,17 @@
         .window-dot.red { background: #ff5f56; }
         .window-dot.yellow { background: #ffbd2e; }
         .window-dot.green { background: #27c93f; }
-        .app-preview-body {
+        .app-preview-video {
+            display: block;
+            width: 100%;
+            height: auto;
             background: var(--bg-secondary);
-            padding: 24px;
-            min-height: 350px;
         }
-        .preview-tool-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-        .preview-tool {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 14px 16px;
-            background: var(--bg-card);
-            border-radius: var(--radius-xs);
-            border: 1px solid var(--border);
-            animation: fadeInUp 0.5s ease-out both;
-        }
-        .preview-tool:nth-child(1) { animation-delay: 0.1s; }
-        .preview-tool:nth-child(2) { animation-delay: 0.2s; }
-        .preview-tool:nth-child(3) { animation-delay: 0.3s; }
-        .preview-tool:nth-child(4) { animation-delay: 0.4s; }
-        .preview-tool:nth-child(5) { animation-delay: 0.5s; }
-        .preview-tool:nth-child(6) { animation-delay: 0.6s; }
 
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .tool-icon {
-            width: 36px; height: 36px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            font-weight: 700;
-            flex-shrink: 0;
-        }
-        .tool-icon.nodejs { background: linear-gradient(135deg, #339933, #68a063); }
-        .tool-icon.python { background: linear-gradient(135deg, #306998, #FFD43B); }
-        .tool-icon.docker { background: linear-gradient(135deg, #0db7ed, #384d54); }
-        .tool-icon.git { background: linear-gradient(135deg, #F05032, #de4c36); }
-        .tool-icon.vscode { background: linear-gradient(135deg, #007ACC, #2b9fef); }
-        .tool-icon.postgres { background: linear-gradient(135deg, #336791, #4a8dbe); }
-        .preview-tool-info { flex: 1; }
-        .preview-tool-name { font-size: 13px; font-weight: 600; }
-        .preview-tool-status {
-            font-size: 11px;
-            color: #27c93f;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .status-dot { width: 6px; height: 6px; background: #27c93f; border-radius: 50%; }
-
         /* ═══════════════════ FEATURES ═══════════════════ */
         .features {
             padding: 100px 0;
@@ -774,52 +727,9 @@
                         <div class="window-dot green"></div>
                         <span style="margin-left: 12px; font-size: 12px; color: var(--text-muted);">DevARI Setup v1.0.3</span>
                     </div>
-                    <div class="app-preview-body">
-                        <div class="preview-tool-grid">
-                            <div class="preview-tool">
-                                <div class="tool-icon nodejs">JS</div>
-                                <div class="preview-tool-info">
-                                    <div class="preview-tool-name">Node.js LTS</div>
-                                    <div class="preview-tool-status"><div class="status-dot"></div> v20.11.0</div>
-                                </div>
-                            </div>
-                            <div class="preview-tool">
-                                <div class="tool-icon python">Py</div>
-                                <div class="preview-tool-info">
-                                    <div class="preview-tool-name">Python 3.13</div>
-                                    <div class="preview-tool-status"><div class="status-dot"></div> v3.13.2</div>
-                                </div>
-                            </div>
-                            <div class="preview-tool">
-                                <div class="tool-icon docker">Dk</div>
-                                <div class="preview-tool-info">
-                                    <div class="preview-tool-name">Docker</div>
-                                    <div class="preview-tool-status"><div class="status-dot"></div> v27.5.1</div>
-                                </div>
-                            </div>
-                            <div class="preview-tool">
-                                <div class="tool-icon git">Gt</div>
-                                <div class="preview-tool-info">
-                                    <div class="preview-tool-name">Git</div>
-                                    <div class="preview-tool-status"><div class="status-dot"></div> v2.48.1</div>
-                                </div>
-                            </div>
-                            <div class="preview-tool">
-                                <div class="tool-icon vscode">VS</div>
-                                <div class="preview-tool-info">
-                                    <div class="preview-tool-name">VS Code</div>
-                                    <div class="preview-tool-status"><div class="status-dot"></div> v1.97.2</div>
-                                </div>
-                            </div>
-                            <div class="preview-tool">
-                                <div class="tool-icon postgres">PG</div>
-                                <div class="preview-tool-info">
-                                    <div class="preview-tool-name">PostgreSQL</div>
-                                    <div class="preview-tool-status"><div class="status-dot"></div> v17.2</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <video class="app-preview-video" autoplay loop muted playsinline>
+                        <source src="devari-promo.mp4" type="video/mp4">
+                    </video>
                 </div>
             </div>
         </div>
