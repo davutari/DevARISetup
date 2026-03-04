@@ -106,7 +106,7 @@
                 </Border>
                 <Border Grid.Column="1" Classes="panel" Margin="0,0,10,0" Background="#1E4C68">
                   <StackPanel>
-                    <TextBlock Text="{Binding ActiveServiceCount}" FontSize="44" FontWeight="Bold" Foreground="White" />
+                    <TextBlock Text="{Binding Services.ActiveServiceCount}" FontSize="44" FontWeight="Bold" Foreground="White" />
                     <TextBlock Text="Aktif Servis" Foreground="#9CE9F3" />
                   </StackPanel>
                 </Border>
@@ -127,7 +127,7 @@
               <Border Grid.Row="1" Classes="panel" Margin="0,14,0,0" Background="#242846">
                 <Grid ColumnDefinitions="2*,130,130,Auto">
                   <TextBox Watermark="Arac ara..."
-                           Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                           Text="{Binding SearchText}"
                            Background="#131938"
                            BorderBrush="#3A416C"
                            Foreground="#DFE5FA" />
@@ -180,15 +180,15 @@
               </StackPanel>
               <Grid Grid.Row="1" ColumnDefinitions="*,*" Margin="0,12,0,0">
                 <Border Classes="panel" Margin="0,0,10,0" Background="#0F4E42">
-                  <TextBlock Text="{Binding ActiveServiceCount, StringFormat='{}{0} aktif servis'}" Foreground="#D8FFF5" FontSize="24" FontWeight="Bold" />
+                  <TextBlock Text="{Binding Services.ActiveServiceCount, StringFormat='{}{0} aktif servis'}" Foreground="#D8FFF5" FontSize="24" FontWeight="Bold" />
                 </Border>
                 <Border Grid.Column="1" Classes="panel" Background="#5A1F2B">
-                  <TextBlock Text="{Binding InactiveServiceCount, StringFormat='{}{0} kapali servis'}" Foreground="#FFDDE3" FontSize="24" FontWeight="Bold" />
+                  <TextBlock Text="{Binding Services.InactiveServiceCount, StringFormat='{}{0} kapali servis'}" Foreground="#FFDDE3" FontSize="24" FontWeight="Bold" />
                 </Border>
               </Grid>
 
               <ScrollViewer Grid.Row="2" Margin="0,12,0,0">
-                <ItemsControl ItemsSource="{Binding ServiceTools}">
+                <ItemsControl ItemsSource="{Binding Services.ServiceTools}">
                   <ItemsControl.ItemTemplate>
                     <DataTemplate>
                       <Border Classes="panel" Margin="0,0,0,10" Background="#202541">
@@ -202,11 +202,11 @@
                           </Border>
                           <TextBlock Grid.Column="2" VerticalAlignment="Center" Text="systemctl servis yonetimi" Foreground="#90A0CE" />
                           <Button Grid.Column="3" Classes="ghost" Margin="8,0,0,0" Content="Durum"
-                                  Command="{Binding DataContext.CheckServiceCommand, ElementName=Root}" CommandParameter="{Binding}" />
+                                  Command="{Binding DataContext.Services.CheckServiceCommand, ElementName=Root}" CommandParameter="{Binding}" />
                           <Button Grid.Column="4" Classes="primary" Margin="8,0,0,0" Content="Start"
-                                  Command="{Binding DataContext.StartServiceCommand, ElementName=Root}" CommandParameter="{Binding}" />
+                                  Command="{Binding DataContext.Services.StartServiceCommand, ElementName=Root}" CommandParameter="{Binding}" />
                           <Button Grid.Column="5" Classes="ghost" Margin="8,0,0,0" Content="Stop"
-                                  Command="{Binding DataContext.StopServiceCommand, ElementName=Root}" CommandParameter="{Binding}" />
+                                  Command="{Binding DataContext.Services.StopServiceCommand, ElementName=Root}" CommandParameter="{Binding}" />
                         </Grid>
                       </Border>
                     </DataTemplate>
@@ -222,11 +222,11 @@
                 <StackPanel Spacing="10">
                   <StackPanel>
                     <TextBlock Text="Tema Secimi" Foreground="#A5B0D1" />
-                    <ComboBox Margin="0,6,0,0" ItemsSource="{Binding ThemeOptions}" SelectedItem="{Binding ThemeMode}" />
+                    <ComboBox Margin="0,6,0,0" ItemsSource="{Binding Settings.ThemeOptions}" SelectedItem="{Binding Settings.ThemeMode}" />
                   </StackPanel>
-                  <ToggleSwitch IsChecked="{Binding AutoCheckAfterAction}" Content="Baslangicta guncelleme kontrolu" />
-                  <ToggleSwitch IsChecked="{Binding AutoStartEnabled}" Content="Servisleri otomatik baslat" />
-                  <ToggleSwitch IsChecked="{Binding UsePkexec}" Content="Yetkili komutlarda pkexec kullan" />
+                  <ToggleSwitch IsChecked="{Binding Settings.AutoCheckAfterAction}" Content="Baslangicta guncelleme kontrolu" />
+                  <ToggleSwitch IsChecked="{Binding Settings.AutoStartEnabled}" Content="Servisleri otomatik baslat" />
+                  <ToggleSwitch IsChecked="{Binding Settings.UsePkexec}" Content="Yetkili komutlarda pkexec kullan" />
                 </StackPanel>
               </Border>
 
@@ -234,12 +234,12 @@
                 <StackPanel>
                   <TextBlock Text="Kurulum Tercihleri" FontWeight="Bold" Foreground="White" />
                   <TextBlock Margin="0,6,0,0" Text="Tercih Edilen Paket Yoneticisi" Foreground="#A5B0D1" />
-                  <ComboBox Margin="0,8,0,0" ItemsSource="{Binding InstallerOptions}" SelectedItem="{Binding InstallerPreference}" />
+                  <ComboBox Margin="0,8,0,0" ItemsSource="{Binding Settings.InstallerOptions}" SelectedItem="{Binding Settings.InstallerPreference}" />
                 </StackPanel>
               </Border>
 
               <StackPanel Grid.Row="3" Margin="0,12,0,0" Orientation="Horizontal" Spacing="10">
-                <Button Classes="primary" Content="Kaydet" Command="{Binding SaveSettingsCommand}" />
+                <Button Classes="primary" Content="Kaydet" Command="{Binding Settings.SaveSettingsCommand}" />
                 <TextBlock VerticalAlignment="Center" Text="Ayarlar ~/.config/devari-manager/settings.json" Foreground="#98A5CA" />
               </StackPanel>
             </Grid>

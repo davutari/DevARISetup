@@ -1,0 +1,9 @@
+{
+  "solution": {
+    "path": "DevARIManager.sln",
+    "projects": [
+      "src\\DevARIManager.App\\DevARIManager.App.csproj",
+      "src\\DevARIManager.Core\\DevARIManager.Core.csproj"
+    ]
+  }
+}

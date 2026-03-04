@@ -3,25 +3,26 @@ using Avalonia.Media;
 using Avalonia.Styling;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using DevARIManager.Core.Helpers;
 using DevARIManager.Linux.Gui.Models;
 using DevARIManager.Linux.Gui.Services;
+using DevARIManager.Linux.Shared;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Text;
 using System.Text.Json;
 
 namespace DevARIManager.Linux.Gui.ViewModels;
 
 public partial class MainWindowViewModel : ObservableObject
 {
+    private readonly IProcessRunner _processRunner;
+
     public ObservableCollection<LinuxToolItem> Tools { get; } = new(LinuxToolCatalog.Create().OrderBy(x => x.DisplayName));
     public ObservableCollection<LinuxToolItem> VisibleTools { get; } = [];
-    public ObservableCollection<LinuxToolItem> ServiceTools { get; } = [];
+    public ServicesViewModel Services { get; }
+    public SettingsViewModel Settings { get; }
     public IReadOnlyList<string> FilterOptions { get; } = ["all", "installed", "missing", "apt", "snap", "rustup"];
     public IReadOnlyList<string> SortOptions { get; } = ["name-asc", "name-desc", "status", "installer"];
-    public IReadOnlyList<string> ThemeOptions { get; } = ["dark", "light", "system"];
-    public IReadOnlyList<string> InstallerOptions { get; } = ["all", "apt", "snap", "rustup"];
 
     [ObservableProperty]
     private string activityLog = "Hazir.";
@@ -36,12 +37,6 @@ public partial class MainWindowViewModel : ObservableObject
     private int unknownCount;
 
     [ObservableProperty]
-    private int activeServiceCount;
-
-    [ObservableProperty]
-    private int inactiveServiceCount;
-
-    [ObservableProperty]
     private string selectedFilter = "all";
 
     [ObservableProperty]
@@ -53,21 +48,6 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty]
     private string selectedSort = "name-asc";
 
-    [ObservableProperty]
-    private string themeMode = "dark";
-
-    [ObservableProperty]
-    private string installerPreference = "all";
-
-    [ObservableProperty]
-    private bool autoStartEnabled;
-
-    [ObservableProperty]
-    private bool usePkexec = true;
-
-    [ObservableProperty]
-    private bool autoCheckAfterAction = true;
-
     public IRelayCommand RefreshCommand { get; }
     public IAsyncRelayCommand CheckAllCommand { get; }
     public IAsyncRelayCommand<LinuxToolItem> CheckCommand { get; }
@@ -76,12 +56,6 @@ public partial class MainWindowViewModel : ObservableObject
     public IRelayCommand<string> SetFilterCommand { get; }
     public IAsyncRelayCommand<string> MenuCommand { get; }
     public IRelayCommand<string> SetSortCommand { get; }
-    public IRelayCommand<string> SetInstallerPreferenceCommand { get; }
-    public IRelayCommand<string> SetThemeCommand { get; }
-    public IAsyncRelayCommand SaveSettingsCommand { get; }
-    public IAsyncRelayCommand<LinuxToolItem> StartServiceCommand { get; }
-    public IAsyncRelayCommand<LinuxToolItem> StopServiceCommand { get; }
-    public IAsyncRelayCommand<LinuxToolItem> CheckServiceCommand { get; }
 
     public bool IsDashboardVisible => SelectedMenu is "dashboard" or "tools" or "health";
     public bool IsServicesVisible => SelectedMenu == "services";
@@ -90,30 +64,24 @@ public partial class MainWindowViewModel : ObservableObject
     public double HealthPercent => TotalTools == 0 ? 0 : InstalledCount * 100.0 / TotalTools;
 
     public MainWindowViewModel()
+        : this(new ProcessRunner())
     {
+    }
+
+    public MainWindowViewModel(IProcessRunner processRunner)
+    {
+        _processRunner = processRunner;
+        Services = new ServicesViewModel(StartServiceAsync, StopServiceAsync, CheckServiceStateAsync);
+        Settings = new SettingsViewModel(SaveSettingsAsync);
+
         foreach (var tool in Tools)
         {
             tool.PropertyChanged += OnToolPropertyChanged;
         }
 
-        RefreshCommand = new RelayCommand(() =>
-        {
-            foreach (var tool in Tools)
-            {
-                tool.Status = "unknown";
-                tool.StatusColor = Brushes.Gray;
-                if (tool.IsService)
-                {
-                    tool.ServiceState = "unknown";
-                    tool.ServiceStateColor = Brushes.Gray;
-                }
-            }
+        Settings.PropertyChanged += OnSettingsPropertyChanged;
 
-            RefreshVisibleTools();
-            RefreshStats();
-            ActivityLog = "Arac durumu sifirlandi.";
-        });
-
+        RefreshCommand = new RelayCommand(ResetToolStates);
         CheckAllCommand = new AsyncRelayCommand(CheckAllAsync);
         CheckCommand = new AsyncRelayCommand<LinuxToolItem>(CheckAsync);
         InstallCommand = new AsyncRelayCommand<LinuxToolItem>(InstallAsync);
@@ -121,16 +89,28 @@ public partial class MainWindowViewModel : ObservableObject
         SetFilterCommand = new RelayCommand<string>(SetFilter);
         MenuCommand = new AsyncRelayCommand<string>(HandleMenuAsync);
         SetSortCommand = new RelayCommand<string>(SetSort);
-        SetInstallerPreferenceCommand = new RelayCommand<string>(SetInstallerPreference);
-        SetThemeCommand = new RelayCommand<string>(SetTheme);
-        SaveSettingsCommand = new AsyncRelayCommand(SaveSettingsAsync);
-        StartServiceCommand = new AsyncRelayCommand<LinuxToolItem>(StartServiceAsync);
-        StopServiceCommand = new AsyncRelayCommand<LinuxToolItem>(StopServiceAsync);
-        CheckServiceCommand = new AsyncRelayCommand<LinuxToolItem>(CheckServiceStateAsync);
 
         LoadSettings();
         RefreshVisibleTools();
         RefreshStats();
+    }
+
+    private void ResetToolStates()
+    {
+        foreach (var tool in Tools)
+        {
+            tool.Status = "unknown";
+            tool.StatusColor = Brushes.Gray;
+            if (tool.IsService)
+            {
+                tool.ServiceState = "unknown";
+                tool.ServiceStateColor = Brushes.Gray;
+            }
+        }
+
+        RefreshVisibleTools();
+        RefreshStats();
+        ActivityLog = "Arac durumu sifirlandi.";
     }
 
     private async Task CheckAllAsync()
@@ -189,7 +169,7 @@ public partial class MainWindowViewModel : ObservableObject
             ? $"{tool.DisplayName} kurulum tamamlandi."
             : $"{tool.DisplayName} kurulum hatasi: {FirstLine(result.Error)}";
 
-        if (AutoCheckAfterAction)
+        if (Settings.AutoCheckAfterAction)
         {
             await CheckAsync(tool);
         }
@@ -208,7 +188,7 @@ public partial class MainWindowViewModel : ObservableObject
             ? $"{tool.DisplayName} kaldirma tamamlandi."
             : $"{tool.DisplayName} kaldirma hatasi: {FirstLine(result.Error)}";
 
-        if (AutoCheckAfterAction)
+        if (Settings.AutoCheckAfterAction)
         {
             await CheckAsync(tool);
         }
@@ -226,18 +206,6 @@ public partial class MainWindowViewModel : ObservableObject
         RefreshVisibleTools();
     }
 
-    private void SetTheme(string? mode)
-    {
-        ThemeMode = string.IsNullOrWhiteSpace(mode) ? "dark" : mode.ToLowerInvariant();
-        ApplyTheme();
-    }
-
-    private void SetInstallerPreference(string? preference)
-    {
-        InstallerPreference = string.IsNullOrWhiteSpace(preference) ? "all" : preference.ToLowerInvariant();
-        RefreshVisibleTools();
-    }
-
     private void RefreshVisibleTools()
     {
         var normalizedSearch = SearchText.Trim().ToLowerInvariant();
@@ -245,7 +213,7 @@ public partial class MainWindowViewModel : ObservableObject
         var toolList = Tools
             .Where(t =>
                 MatchesFilter(t, SelectedFilter) &&
-                MatchesInstallerPreference(t, InstallerPreference) &&
+                MatchesInstallerPreference(t, Settings.InstallerPreference) &&
                 MatchesSearch(t, normalizedSearch))
             .ToList();
         toolList = ApplySort(toolList, SelectedSort);
@@ -260,12 +228,7 @@ public partial class MainWindowViewModel : ObservableObject
             .Where(t => t.IsService && MatchesSearch(t, normalizedSearch))
             .ToList();
         serviceList = ApplySort(serviceList, SelectedSort);
-
-        ServiceTools.Clear();
-        foreach (var tool in serviceList)
-        {
-            ServiceTools.Add(tool);
-        }
+        Services.SetServiceTools(serviceList);
     }
 
     private static bool MatchesFilter(LinuxToolItem tool, string filter)
@@ -405,8 +368,7 @@ public partial class MainWindowViewModel : ObservableObject
         InstalledCount = Tools.Count(t => t.Status == "installed");
         NotInstalledCount = Tools.Count(t => t.Status == "not-installed");
         UnknownCount = Tools.Count(t => t.Status != "installed" && t.Status != "not-installed");
-        ActiveServiceCount = Tools.Count(t => t.IsService && t.ServiceState == "active");
-        InactiveServiceCount = Tools.Count(t => t.IsService && t.ServiceState != "active");
+        Services.UpdateStats(Tools);
         OnPropertyChanged(nameof(HealthPercent));
         OnPropertyChanged(nameof(TotalTools));
     }
@@ -427,6 +389,19 @@ public partial class MainWindowViewModel : ObservableObject
         }
     }
 
+    private void OnSettingsPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(SettingsViewModel.ThemeMode))
+        {
+            ApplyTheme();
+        }
+
+        if (e.PropertyName == nameof(SettingsViewModel.InstallerPreference))
+        {
+            RefreshVisibleTools();
+        }
+    }
+
     partial void OnSelectedMenuChanged(string value)
     {
         OnPropertyChanged(nameof(IsDashboardVisible));
@@ -437,57 +412,25 @@ public partial class MainWindowViewModel : ObservableObject
     partial void OnSearchTextChanged(string value) => RefreshVisibleTools();
     partial void OnSelectedFilterChanged(string value) => RefreshVisibleTools();
     partial void OnSelectedSortChanged(string value) => RefreshVisibleTools();
-    partial void OnInstallerPreferenceChanged(string value) => RefreshVisibleTools();
 
-    private static async Task<(int ExitCode, string Output, string Error)> RunShellAsync(string command)
+    private async Task<ProcessResult> RunShellAsync(string command)
     {
-        var psi = new ProcessStartInfo
-        {
-            FileName = "bash",
-            Arguments = $"-lc \"{EscapeForDoubleQuotedBash(command)}\"",
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-            UseShellExecute = false,
-            CreateNoWindow = true,
-            StandardOutputEncoding = Encoding.UTF8,
-            StandardErrorEncoding = Encoding.UTF8
-        };
-
-        using var process = new Process { StartInfo = psi };
-        process.Start();
-
-        var outputTask = process.StandardOutput.ReadToEndAsync();
-        var errorTask = process.StandardError.ReadToEndAsync();
-        await process.WaitForExitAsync();
-
-        return (process.ExitCode, await outputTask, await errorTask);
+        var escaped = LinuxToolRegistry.EscapeForDoubleQuotedBash(command);
+        return await _processRunner.RunAsync("bash", $"-lc \"{escaped}\"");
     }
 
-    private async Task<(int ExitCode, string Output, string Error)> RunPrivilegedAsync(string command)
+    private async Task<ProcessResult> RunPrivilegedAsync(string command)
     {
-        if (!UsePkexec)
+        if (!Settings.UsePkexec)
         {
             return await RunShellAsync(command);
         }
 
-        var commandWithoutSudo = command.Replace("sudo ", "", StringComparison.OrdinalIgnoreCase);
-        return await RunShellAsync($"pkexec bash -lc \"{EscapeForDoubleQuotedBash(commandWithoutSudo)}\" || bash -lc \"{EscapeForDoubleQuotedBash(command)}\"");
-    }
-
-    private static string EscapeForDoubleQuotedBash(string value)
-    {
-        var builder = new StringBuilder(value.Length);
-        foreach (var ch in value)
-        {
-            if (ch is '\\' or '"' or '$' or '`')
-            {
-                builder.Append('\\');
-            }
-
-            builder.Append(ch);
-        }
-
-        return builder.ToString();
+        var commandWithoutSudo = command.Replace("sudo ", string.Empty, StringComparison.OrdinalIgnoreCase);
+        var chained =
+            $"pkexec bash -lc \"{LinuxToolRegistry.EscapeForDoubleQuotedBash(commandWithoutSudo)}\" || " +
+            $"bash -lc \"{LinuxToolRegistry.EscapeForDoubleQuotedBash(command)}\"";
+        return await RunShellAsync(chained);
     }
 
     private static string FirstLine(string text)
@@ -512,10 +455,10 @@ public partial class MainWindowViewModel : ObservableObject
                 var data = JsonSerializer.Deserialize<LinuxUiSettings>(raw);
                 if (data is not null)
                 {
-                    ThemeMode = string.IsNullOrWhiteSpace(data.ThemeMode) ? "dark" : data.ThemeMode;
-                    InstallerPreference = string.IsNullOrWhiteSpace(data.InstallerPreference) ? "all" : data.InstallerPreference;
-                    UsePkexec = data.UsePkexec;
-                    AutoCheckAfterAction = data.AutoCheckAfterAction;
+                    Settings.ThemeMode = string.IsNullOrWhiteSpace(data.ThemeMode) ? "dark" : data.ThemeMode;
+                    Settings.InstallerPreference = string.IsNullOrWhiteSpace(data.InstallerPreference) ? "all" : data.InstallerPreference;
+                    Settings.UsePkexec = data.UsePkexec;
+                    Settings.AutoCheckAfterAction = data.AutoCheckAfterAction;
                 }
             }
         }
@@ -524,7 +467,7 @@ public partial class MainWindowViewModel : ObservableObject
             // Defaults are already set.
         }
 
-        AutoStartEnabled = File.Exists(GetAutostartPath());
+        Settings.AutoStartEnabled = File.Exists(GetAutostartPath());
         ApplyTheme();
     }
 
@@ -535,15 +478,15 @@ public partial class MainWindowViewModel : ObservableObject
             Directory.CreateDirectory(GetConfigDirectory());
             var settings = new LinuxUiSettings
             {
-                ThemeMode = ThemeMode,
-                InstallerPreference = InstallerPreference,
-                UsePkexec = UsePkexec,
-                AutoCheckAfterAction = AutoCheckAfterAction
+                ThemeMode = Settings.ThemeMode,
+                InstallerPreference = Settings.InstallerPreference,
+                UsePkexec = Settings.UsePkexec,
+                AutoCheckAfterAction = Settings.AutoCheckAfterAction
             };
 
             var json = JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true });
             await File.WriteAllTextAsync(GetSettingsPath(), json);
-            await ApplyAutostartAsync(AutoStartEnabled);
+            await ApplyAutostartAsync(Settings.AutoStartEnabled);
             ApplyTheme();
             ActivityLog = "Ayarlar kaydedildi.";
         }
@@ -594,7 +537,8 @@ X-GNOME-Autostart-enabled=true
             return appImagePath;
         }
 
-        const string knownPath = "/home/ara/Applications/DevARIManager/linux/devari-manager.AppImage";
+        var home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+        var knownPath = Path.Combine(home, "Applications", "DevARIManager", "linux", "devari-manager.AppImage");
         if (File.Exists(knownPath))
         {
             return knownPath;
@@ -610,7 +554,7 @@ X-GNOME-Autostart-enabled=true
             return;
         }
 
-        Application.Current.RequestedThemeVariant = ThemeMode switch
+        Application.Current.RequestedThemeVariant = Settings.ThemeMode switch
         {
             "light" => ThemeVariant.Light,
             "system" => ThemeVariant.Default,
